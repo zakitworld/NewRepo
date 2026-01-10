@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineVoting_and_Ticketing_app.Views.Tickets.TicketsPage"
+             Title="My Tickets"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <VerticalStackLayout
+            Grid.Row="0"
+            Padding="20"
+            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+            <Label
+                Text="My Tickets"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+            <Label
+                x:Name="TicketCountLabel"
+                Text="0 tickets"
+                FontSize="14"
+                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                Margin="0,5,0,0" />
+        </VerticalStackLayout>
+
+        <!-- Tickets List -->
+        <RefreshView
+            Grid.Row="1"
+            x:Name="RefreshView"
+            Refreshing="OnRefreshing">
+            <CollectionView
+                x:Name="TicketsCollectionView"
+                SelectionMode="Single"
+                SelectionChanged="OnTicketSelected"
+                Margin="15,15">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="15" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 15"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                            Padding="15">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+
+                                <!-- Event Title -->
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Text="{Binding EventTitle}"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                    Margin="0,0,0,10" />
+
+                                <!-- Ticket Type -->
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="8" Margin="0,0,0,8">
+                                    <Label
+                                        Text="🎫"
+                                        FontSize="14" />
+                                    <Label
+                                        Text="{Binding TicketTypeName}"
+                                        FontSize="14"
+                                        TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                                </HorizontalStackLayout>
+
+                                <!-- Purchase Date -->
+                                <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="8" Margin="0,0,0,8">
+                                    <Label
+                                        Text="📅"
+                                        FontSize="14" />
+                                    <Label
+                                        Text="{Binding PurchasedAt, StringFormat='{0:MMM dd, yyyy}'}"
+                                        FontSize="14"
+                                        TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                                </HorizontalStackLayout>
+
+                                <!-- Price -->
+                                <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Spacing="8">
+                                    <Label
+                                        Text="💰"
+                                        FontSize="14" />
+                                    <Label
+                                        Text="{Binding Price, StringFormat='GH₵ {0:F2}'}"
+                                        FontSize="14"
+                                        FontAttributes="Bold"
+                                        TextColor="{StaticResource Primary}" />
+                                </HorizontalStackLayout>
+
+                                <!-- Status Badge -->
+                                <Border
+                                    Grid.Row="1"
+                                    Grid.RowSpan="3"
+                                    Grid.Column="1"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="0"
+                                    Padding="12,6"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="End">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="0">
+                                            <Setter Property="BackgroundColor" Value="#10B981" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="1">
+                                            <Setter Property="BackgroundColor" Value="#6B7280" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="2">
+                                            <Setter Property="BackgroundColor" Value="#EF4444" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Label
+                                        Text="{Binding Status}"
+                                        TextColor="White"
+                                        FontSize="12"
+                                        FontAttributes="Bold" />
+                                </Border>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Spacing="15"
+                        Padding="40">
+                        <Label
+                            Text="🎫"
+                            FontSize="60"
+                            HorizontalOptions="Center" />
+                        <Label
+                            Text="No tickets yet"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        <Label
+                            Text="Purchase tickets to see them here"
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                        <Button
+                            Text="Browse Events"
+                            Clicked="OnBrowseEventsClicked"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            Padding="30,12"
+                            Margin="0,20,0,0" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator
+            Grid.Row="1"
+            x:Name="LoadingIndicator"
+            IsRunning="False"
+            IsVisible="False"
+            Color="{StaticResource Primary}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center" />
+
+    </Grid>
+
+</ContentPage>

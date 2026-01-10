@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
+             x:Class="OnlineVoting_and_Ticketing_app.Views.Polls.PollsPage"
+             Title="Polls & Voting"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <VerticalStackLayout
+            Grid.Row="0"
+            Padding="20"
+            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+            <Label
+                Text="Polls & Voting"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+            <Label
+                Text="Make your voice heard"
+                FontSize="14"
+                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                Margin="0,5,0,0" />
+        </VerticalStackLayout>
+
+        <!-- Polls List -->
+        <RefreshView
+            Grid.Row="1"
+            x:Name="RefreshView"
+            Refreshing="OnRefreshing">
+            <CollectionView
+                x:Name="PollsCollectionView"
+                SelectionMode="Single"
+                SelectionChanged="OnPollSelected"
+                Margin="15,10">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="15" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 15"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                            Padding="20">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*">
+
+                                <!-- Poll Title -->
+                                <Label
+                                    Grid.Row="0"
+                                    Text="{Binding Title}"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                    Margin="0,0,0,10"
+                                    LineBreakMode="WordWrap" />
+
+                                <!-- Poll Description -->
+                                <Label
+                                    Grid.Row="1"
+                                    Text="{Binding Description}"
+                                    FontSize="14"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                                    Margin="0,0,0,15"
+                                    LineBreakMode="WordWrap"
+                                    MaxLines="2" />
+
+                                <!-- Poll Info -->
+                                <Grid Grid.Row="2" ColumnDefinitions="Auto,*" ColumnSpacing="10" Margin="0,0,0,10">
+                                    <Border
+                                        Grid.Column="0"
+                                        StrokeShape="RoundRectangle 20"
+                                        StrokeThickness="1"
+                                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                                        WidthRequest="40"
+                                        HeightRequest="40"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}">
+                                        <Label
+                                            Text="👤"
+                                            FontSize="18"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center" />
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label
+                                            Text="{Binding CreatorName}"
+                                            FontSize="14"
+                                            FontAttributes="Bold"
+                                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                        <Label
+                                            Text="{Binding TotalVotes, StringFormat='{0} votes'}"
+                                            FontSize="12"
+                                            TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <!-- Poll Duration -->
+                                <HorizontalStackLayout Grid.Row="3" Spacing="8" Margin="0,0,0,10">
+                                    <Label
+                                        Text="⏰"
+                                        FontSize="14" />
+                                    <Label
+                                        Text="{Binding EndDate, StringFormat='Ends: {0:MMM dd, yyyy}'}"
+                                        FontSize="13"
+                                        TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                                </HorizontalStackLayout>
+
+                                <!-- Status Badge -->
+                                <Border
+                                    Grid.Row="4"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="0"
+                                    Padding="12,6"
+                                    HorizontalOptions="Start">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="1">
+                                            <Setter Property="BackgroundColor" Value="#10B981" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="2">
+                                            <Setter Property="BackgroundColor" Value="#6B7280" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Label
+                                        Text="{Binding Status}"
+                                        TextColor="White"
+                                        FontSize="12"
+                                        FontAttributes="Bold" />
+                                </Border>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Spacing="15"
+                        Padding="40">
+                        <Label
+                            Text="📊"
+                            FontSize="60"
+                            HorizontalOptions="Center" />
+                        <Label
+                            Text="No active polls"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        <Label
+                            Text="Check back later for new polls"
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator
+            Grid.Row="1"
+            x:Name="LoadingIndicator"
+            IsRunning="False"
+            IsVisible="False"
+            Color="{StaticResource Primary}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center" />
+
+        <!-- Floating Action Button -->
+        <Border
+            Grid.Row="1"
+            StrokeShape="RoundRectangle 30"
+            StrokeThickness="0"
+            BackgroundColor="{StaticResource Primary}"
+            WidthRequest="60"
+            HeightRequest="60"
+            HorizontalOptions="End"
+            VerticalOptions="End"
+            Margin="0,0,20,20"
+            Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.3}">
+            <Label
+                Text="+"
+                FontSize="32"
+                TextColor="White"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnCreatePollTapped" />
+            </Border.GestureRecognizers>
+        </Border>
+
+    </Grid>
+
+</ContentPage>

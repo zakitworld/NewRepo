@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineVoting_and_Ticketing_app.Views.Profile.ProfilePage"
+             Title="Profile"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Profile Header -->
+            <VerticalStackLayout Spacing="15" Margin="0,20,0,0">
+                <Border
+                    StrokeShape="RoundRectangle 50"
+                    StrokeThickness="3"
+                    Stroke="{StaticResource Primary}"
+                    WidthRequest="100"
+                    HeightRequest="100"
+                    HorizontalOptions="Center"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}">
+                    <Label
+                        Text="👤"
+                        FontSize="50"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center" />
+                </Border>
+
+                <Label
+                    x:Name="UserNameLabel"
+                    Text="Guest User"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                <Label
+                    x:Name="UserEmailLabel"
+                    Text="guest@eventhub.com"
+                    FontSize="14"
+                    HorizontalOptions="Center"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+            </VerticalStackLayout>
+
+            <!-- Stats -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="15" Margin="0,10,0,0">
+                <Border
+                    Grid.Column="0"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15">
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            x:Name="EventsCountLabel"
+                            Text="0"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Primary}" />
+                        <Label
+                            Text="Events"
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border
+                    Grid.Column="1"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15">
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            x:Name="TicketsCountLabel"
+                            Text="0"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Primary}" />
+                        <Label
+                            Text="Tickets"
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border
+                    Grid.Column="2"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15">
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            x:Name="VotesCountLabel"
+                            Text="0"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Primary}" />
+                        <Label
+                            Text="Votes"
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Menu Items -->
+            <VerticalStackLayout Spacing="10" Margin="0,20,0,0">
+
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15">
+                    <HorizontalStackLayout Spacing="15">
+                        <Label
+                            Text="👤"
+                            FontSize="24" />
+                        <Label
+                            Text="Edit Profile"
+                            FontSize="16"
+                            VerticalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnEditProfileTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15">
+                    <HorizontalStackLayout Spacing="15">
+                        <Label
+                            Text="🎫"
+                            FontSize="24" />
+                        <Label
+                            Text="My Tickets"
+                            FontSize="16"
+                            VerticalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnMyTicketsTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15">
+                    <HorizontalStackLayout Spacing="15">
+                        <Label
+                            Text="📅"
+                            FontSize="24" />
+                        <Label
+                            Text="My Events"
+                            FontSize="16"
+                            VerticalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnMyEventsTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <Border
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15">
+                    <HorizontalStackLayout Spacing="15">
+                        <Label
+                            Text="⚙️"
+                            FontSize="24" />
+                        <Label
+                            Text="Settings"
+                            FontSize="16"
+                            VerticalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSettingsTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- Logout Button -->
+            <Button
+                x:Name="LogoutButton"
+                Text="Logout"
+                Clicked="OnLogoutClicked"
+                BackgroundColor="Transparent"
+                TextColor="#EF4444"
+                BorderColor="#EF4444"
+                BorderWidth="2"
+                CornerRadius="10"
+                HeightRequest="50"
+                Margin="0,20,0,20" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

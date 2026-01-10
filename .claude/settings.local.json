@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s /b)",
+      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" log --oneline)",
+      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" log --format=\"%h %s\")",
+      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" show 1ef45e1 --stat)",
+      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" ls-tree -r HEAD)",
+      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" log --all --full-tree --format=\"\" --name-status)",
+      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" show:*)",
+      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" log --all --oneline)",
+      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" branch -a)"
+    ]
+  }
+}

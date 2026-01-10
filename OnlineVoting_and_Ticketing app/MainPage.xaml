@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineVoting_and_Ticketing_app.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
+
+            <!-- Welcome Section -->
+            <VerticalStackLayout Spacing="10" Margin="0,20,0,0">
+                <Label
+                    x:Name="WelcomeLabel"
+                    Text="Welcome to EventHub"
+                    FontSize="28"
+                    FontAttributes="Bold"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                <Label
+                    Text="Discover events, vote in polls, and get your tickets!"
+                    FontSize="15"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                    LineHeight="1.4" />
+            </VerticalStackLayout>
+
+            <!-- Quick Actions -->
+            <VerticalStackLayout Spacing="15">
+                <Label
+                    Text="Quick Actions"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="15" RowSpacing="15">
+
+                    <!-- Browse Events -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0"
+                        BackgroundColor="{StaticResource Primary}"
+                        Padding="20"
+                        HeightRequest="120">
+                        <VerticalStackLayout Spacing="10" VerticalOptions="Center">
+                            <Label
+                                Text="📅"
+                                FontSize="32"
+                                HorizontalOptions="Center" />
+                            <Label
+                                Text="Events"
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                TextColor="White"
+                                HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnEventsCardTapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <!-- View Polls -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0"
+                        BackgroundColor="#8B5CF6"
+                        Padding="20"
+                        HeightRequest="120">
+                        <VerticalStackLayout Spacing="10" VerticalOptions="Center">
+                            <Label
+                                Text="📊"
+                                FontSize="32"
+                                HorizontalOptions="Center" />
+                            <Label
+                                Text="Polls"
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                TextColor="White"
+                                HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnPollsCardTapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <!-- My Tickets -->
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0"
+                        BackgroundColor="#10B981"
+                        Padding="20"
+                        HeightRequest="120">
+                        <VerticalStackLayout Spacing="10" VerticalOptions="Center">
+                            <Label
+                                Text="🎫"
+                                FontSize="32"
+                                HorizontalOptions="Center" />
+                            <Label
+                                Text="Tickets"
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                TextColor="White"
+                                HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTicketsCardTapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <!-- Profile -->
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0"
+                        BackgroundColor="#F59E0B"
+                        Padding="20"
+                        HeightRequest="120">
+                        <VerticalStackLayout Spacing="10" VerticalOptions="Center">
+                            <Label
+                                Text="👤"
+                                FontSize="32"
+                                HorizontalOptions="Center" />
+                            <Label
+                                Text="Profile"
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                TextColor="White"
+                                HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnProfileCardTapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- Info Card -->
+            <Border
+                StrokeShape="RoundRectangle 15"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                Padding="20">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        Text="✨ What's New"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                    <Label
+                        Text="• Browse and discover exciting events&#10;• Purchase tickets securely with Paystack&#10;• Participate in polls and voting&#10;• View tickets with QR codes&#10;• Share and manage your tickets"
+                        FontSize="14"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                        LineHeight="1.6" />
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

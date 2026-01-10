@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
+             x:Class="OnlineVoting_and_Ticketing_app.Views.Events.EventsPage"
+             Title="Events"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header with Search -->
+        <VerticalStackLayout
+            Grid.Row="0"
+            Padding="20,20,20,10"
+            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+
+            <Label
+                Text="Discover Events"
+                FontSize="28"
+                FontAttributes="Bold"
+                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+            <Border
+                Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 10"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                Padding="15,10"
+                Margin="0,15,0,0">
+                <HorizontalStackLayout Spacing="10">
+                    <Label
+                        Text="🔍"
+                        FontSize="18"
+                        VerticalOptions="Center" />
+                    <Entry
+                        x:Name="SearchEntry"
+                        Placeholder="Search events..."
+                        PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                        TextChanged="OnSearchTextChanged"
+                        HorizontalOptions="FillAndExpand" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Category Filter -->
+            <ScrollView Orientation="Horizontal" Margin="0,15,0,0" HorizontalScrollBarVisibility="Never">
+                <HorizontalStackLayout Spacing="10">
+                    <Border
+                        x:Name="AllCategoryButton"
+                        Stroke="{StaticResource Primary}"
+                        StrokeThickness="2"
+                        StrokeShape="RoundRectangle 20"
+                        BackgroundColor="{StaticResource Primary}"
+                        Padding="20,8">
+                        <Label
+                            Text="All"
+                            TextColor="White"
+                            FontAttributes="Bold" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="All" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <Border
+                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 20"
+                        BackgroundColor="Transparent"
+                        Padding="20,8">
+                        <Label
+                            Text="Music"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="Music" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <Border
+                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 20"
+                        BackgroundColor="Transparent"
+                        Padding="20,8">
+                        <Label
+                            Text="Sports"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="Sports" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <Border
+                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 20"
+                        BackgroundColor="Transparent"
+                        Padding="20,8">
+                        <Label
+                            Text="Conference"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="Conference" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <Border
+                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 20"
+                        BackgroundColor="Transparent"
+                        Padding="20,8">
+                        <Label
+                            Text="Workshop"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="Workshop" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </HorizontalStackLayout>
+            </ScrollView>
+
+        </VerticalStackLayout>
+
+        <!-- Events List -->
+        <RefreshView
+            Grid.Row="1"
+            x:Name="RefreshView"
+            Refreshing="OnRefreshing">
+            <CollectionView
+                x:Name="EventsCollectionView"
+                SelectionMode="Single"
+                SelectionChanged="OnEventSelected"
+                Margin="15,10">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="15" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 15"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                            Padding="0">
+                            <Grid RowDefinitions="180,Auto,Auto,Auto" ColumnDefinitions="*">
+
+                                <!-- Event Image -->
+                                <Border
+                                    Grid.Row="0"
+                                    StrokeShape="RoundRectangle 15,15,0,0"
+                                    StrokeThickness="0"
+                                    HeightRequest="180">
+                                    <ffimageloading:CachedImage
+                                        Source="{Binding ImageUrl}"
+                                        Aspect="AspectFill"
+                                        LoadingPlaceholder="placeholder.png"
+                                        ErrorPlaceholder="placeholder.png" />
+                                </Border>
+
+                                <!-- Event Title -->
+                                <Label
+                                    Grid.Row="1"
+                                    Text="{Binding Title}"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                    Margin="15,15,15,5"
+                                    LineBreakMode="TailTruncation"
+                                    MaxLines="2" />
+
+                                <!-- Event Details -->
+                                <VerticalStackLayout Grid.Row="2" Spacing="8" Margin="15,0,15,10">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label
+                                            Text="📅"
+                                            FontSize="14" />
+                                        <Label
+                                            Text="{Binding StartDate, StringFormat='{0:MMM dd, yyyy • h:mm tt}'}"
+                                            FontSize="14"
+                                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                                    </HorizontalStackLayout>
+
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label
+                                            Text="📍"
+                                            FontSize="14" />
+                                        <Label
+                                            Text="{Binding Location}"
+                                            FontSize="14"
+                                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                                            LineBreakMode="TailTruncation" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+
+                                <!-- Price and Category -->
+                                <Grid Grid.Row="3" ColumnDefinitions="*,Auto" Margin="15,0,15,15">
+                                    <Border
+                                        Grid.Column="0"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="0"
+                                        BackgroundColor="{StaticResource Primary}"
+                                        Padding="12,6"
+                                        HorizontalOptions="Start">
+                                        <Label
+                                            Text="{Binding Category}"
+                                            TextColor="White"
+                                            FontSize="12"
+                                            FontAttributes="Bold" />
+                                    </Border>
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding TicketTypes[0].Price, StringFormat='GH₵ {0:F2}'}"
+                                        FontSize="16"
+                                        FontAttributes="Bold"
+                                        TextColor="{StaticResource Primary}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Spacing="15"
+                        Padding="40">
+                        <Label
+                            Text="📅"
+                            FontSize="60"
+                            HorizontalOptions="Center" />
+                        <Label
+                            Text="No events found"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        <Label
+                            Text="Check back later for upcoming events"
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator
+            Grid.Row="1"
+            x:Name="LoadingIndicator"
+            IsRunning="False"
+            IsVisible="False"
+            Color="{StaticResource Primary}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center" />
+
+        <!-- Floating Action Button -->
+        <Border
+            Grid.Row="1"
+            StrokeShape="RoundRectangle 30"
+            StrokeThickness="0"
+            BackgroundColor="{StaticResource Primary}"
+            WidthRequest="60"
+            HeightRequest="60"
+            HorizontalOptions="End"
+            VerticalOptions="End"
+            Margin="0,0,20,20"
+            Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.3}">
+            <Label
+                Text="+"
+                FontSize="32"
+                TextColor="White"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnCreateEventTapped" />
+            </Border.GestureRecognizers>
+        </Border>
+
+    </Grid>
+
+</ContentPage>

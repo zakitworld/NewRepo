@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineVoting_and_Ticketing_app.Views.Tickets.TicketDetailsPage"
+             Title="Ticket Details"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Ticket Card -->
+            <Border
+                Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 20"
+                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                Padding="0">
+
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+
+                    <!-- Header -->
+                    <Border
+                        Grid.Row="0"
+                        StrokeShape="RoundRectangle 20,20,0,0"
+                        StrokeThickness="0"
+                        BackgroundColor="{StaticResource Primary}"
+                        Padding="20">
+                        <VerticalStackLayout Spacing="5">
+                            <Label
+                                x:Name="EventTitleLabel"
+                                FontSize="22"
+                                FontAttributes="Bold"
+                                TextColor="White"
+                                HorizontalOptions="Center"
+                                HorizontalTextAlignment="Center" />
+                            <Label
+                                x:Name="TicketTypeLabel"
+                                FontSize="14"
+                                TextColor="White"
+                                Opacity="0.9"
+                                HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- QR Code -->
+                    <Border
+                        Grid.Row="1"
+                        StrokeThickness="0"
+                        Padding="20"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+                        <VerticalStackLayout Spacing="15">
+                            <Border
+                                StrokeShape="RoundRectangle 15"
+                                StrokeThickness="2"
+                                Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                                Padding="20"
+                                HorizontalOptions="Center"
+                                BackgroundColor="White">
+                                <Image
+                                    x:Name="QRCodeImage"
+                                    WidthRequest="200"
+                                    HeightRequest="200"
+                                    Aspect="AspectFit" />
+                            </Border>
+                            <Label
+                                Text="Show this QR code at the entrance"
+                                FontSize="13"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                                HorizontalOptions="Center"
+                                HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Divider -->
+                    <BoxView
+                        Grid.Row="2"
+                        HeightRequest="1"
+                        Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                        Margin="20,0" />
+
+                    <!-- Ticket Details -->
+                    <VerticalStackLayout
+                        Grid.Row="3"
+                        Padding="20"
+                        Spacing="15">
+
+                        <Grid ColumnDefinitions="*,*">
+                            <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                <Label
+                                    Text="Ticket Holder"
+                                    FontSize="12"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                                <Label
+                                    x:Name="TicketHolderLabel"
+                                    FontSize="15"
+                                    FontAttributes="Bold"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="End">
+                                <Label
+                                    Text="Price"
+                                    FontSize="12"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                                <Label
+                                    x:Name="PriceLabel"
+                                    FontSize="15"
+                                    FontAttributes="Bold"
+                                    TextColor="{StaticResource Primary}" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*">
+                            <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                <Label
+                                    Text="Purchase Date"
+                                    FontSize="12"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                                <Label
+                                    x:Name="PurchaseDateLabel"
+                                    FontSize="14"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="End">
+                                <Label
+                                    Text="Status"
+                                    FontSize="12"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                                <Border
+                                    x:Name="StatusBorder"
+                                    StrokeShape="RoundRectangle 6"
+                                    StrokeThickness="0"
+                                    BackgroundColor="#10B981"
+                                    Padding="10,4">
+                                    <Label
+                                        x:Name="StatusLabel"
+                                        TextColor="White"
+                                        FontSize="12"
+                                        FontAttributes="Bold" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label
+                                Text="Ticket ID"
+                                FontSize="12"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                            <Label
+                                x:Name="TicketIdLabel"
+                                FontSize="12"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}"
+                                FontFamily="Courier" />
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+
+                    <!-- Check-in Info (if used) -->
+                    <Border
+                        x:Name="CheckInBorder"
+                        Grid.Row="4"
+                        IsVisible="False"
+                        StrokeShape="RoundRectangle 0,0,20,20"
+                        StrokeThickness="0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                        Padding="20,15">
+                        <VerticalStackLayout Spacing="5">
+                            <Label
+                                Text="✓ Checked In"
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                TextColor="#10B981" />
+                            <Label
+                                x:Name="CheckInDateLabel"
+                                FontSize="13"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                </Grid>
+            </Border>
+
+            <!-- Action Buttons -->
+            <VerticalStackLayout Spacing="10">
+                <Button
+                    x:Name="DownloadButton"
+                    Text="Download Ticket"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Clicked="OnDownloadTicketClicked" />
+
+                <Button
+                    x:Name="ShareButton"
+                    Text="Share Ticket"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Primary}"
+                    BorderColor="{StaticResource Primary}"
+                    BorderWidth="2"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Clicked="OnShareTicketClicked" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="OnlineVoting_and_Ticketing_app.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:OnlineVoting_and_Ticketing_app"
+    xmlns:events="clr-namespace:OnlineVoting_and_Ticketing_app.Views.Events"
+    xmlns:tickets="clr-namespace:OnlineVoting_and_Ticketing_app.Views.Tickets"
+    xmlns:polls="clr-namespace:OnlineVoting_and_Ticketing_app.Views.Polls"
+    xmlns:profile="clr-namespace:OnlineVoting_and_Ticketing_app.Views.Profile"
+    Title="EventHub"
+    FlyoutBehavior="Disabled">
+
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="home" />
+
+        <ShellContent
+            Title="Events"
+            ContentTemplate="{DataTemplate events:EventsPage}"
+            Route="events" />
+
+        <ShellContent
+            Title="Polls"
+            ContentTemplate="{DataTemplate polls:PollsPage}"
+            Route="polls" />
+
+        <ShellContent
+            Title="Tickets"
+            ContentTemplate="{DataTemplate tickets:TicketsPage}"
+            Route="tickets" />
+
+        <ShellContent
+            Title="Profile"
+            ContentTemplate="{DataTemplate profile:ProfilePage}"
+            Route="profile" />
+    </TabBar>
+
+</Shell>
