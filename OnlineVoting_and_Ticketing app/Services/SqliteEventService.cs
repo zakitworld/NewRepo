@@ -1,51 +1,26 @@
-using Firebase.Database;
-using Firebase.Database.Query;
-using OnlineVoting_and_Ticketing_app.Constants;
+using Microsoft.EntityFrameworkCore;
+using OnlineVoting_and_Ticketing_app.Data;
 using OnlineVoting_and_Ticketing_app.Models;
 
 namespace OnlineVoting_and_Ticketing_app.Services
 {
-    public class FirebaseEventService : IEventService
+    public class SqliteEventService : IEventService
     {
-        private readonly FirebaseClient _firebaseClient;
+        private readonly AppDbContext _context;
 
-        public FirebaseEventService()
+        public SqliteEventService(AppDbContext context)
         {
-            _firebaseClient = new FirebaseClient(FirebaseConfig.DatabaseUrl);
+            _context = context;
         }
 
         public async Task<List<Event>> GetAllEventsAsync()
         {
             try
             {
-                var events = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionEvents)
-                    .OnceAsync<Event>();
-
-                return events
-                    .Select(e => new Event
-                    {
-                        Id = e.Key,
-                        Title = e.Object.Title,
-                        Description = e.Object.Description,
-                        Location = e.Object.Location,
-                        ImageUrl = e.Object.ImageUrl,
-                        OrganizerId = e.Object.OrganizerId,
-                        OrganizerName = e.Object.OrganizerName,
-                        StartDate = e.Object.StartDate,
-                        EndDate = e.Object.EndDate,
-                        Category = e.Object.Category,
-                        Type = e.Object.Type,
-                        Status = e.Object.Status,
-                        TicketTypes = e.Object.TicketTypes,
-                        TotalTickets = e.Object.TotalTickets,
-                        AvailableTickets = e.Object.AvailableTickets,
-                        IsPublished = e.Object.IsPublished,
-                        CreatedAt = e.Object.CreatedAt,
-                        UpdatedAt = e.Object.UpdatedAt
-                    })
+                return await _context.Events
+                    .Include(e => e.TicketTypes)
                     .OrderByDescending(e => e.CreatedAt)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {
@@ -57,11 +32,11 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var allEvents = await GetAllEventsAsync();
-                return allEvents
+                return await _context.Events
+                    .Include(e => e.TicketTypes)
                     .Where(e => e.IsPublished && e.StartDate > DateTime.UtcNow)
                     .OrderBy(e => e.StartDate)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {
@@ -73,10 +48,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var allEvents = await GetAllEventsAsync();
-                return allEvents
+                return await _context.Events
+                    .Include(e => e.TicketTypes)
                     .Where(e => e.Category == category && e.IsPublished)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {
@@ -88,16 +63,9 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var eventData = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionEvents)
-                    .Child(eventId)
-                    .OnceSingleAsync<Event>();
-
-                if (eventData == null)
-                    return null;
-
-                eventData.Id = eventId;
-                return eventData;
+                return await _context.Events
+                    .Include(e => e.TicketTypes)
+                    .FirstOrDefaultAsync(e => e.Id == eventId);
             }
             catch
             {
@@ -109,10 +77,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var allEvents = await GetAllEventsAsync();
-                return allEvents
+                return await _context.Events
+                    .Include(e => e.TicketTypes)
                     .Where(e => e.OrganizerId == organizerId)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {
@@ -124,14 +92,14 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
+                eventData.Id = Guid.NewGuid().ToString();
                 eventData.CreatedAt = DateTime.UtcNow;
                 eventData.UpdatedAt = DateTime.UtcNow;
 
-                var result = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionEvents)
-                    .PostAsync(eventData);
+                _context.Events.Add(eventData);
+                await _context.SaveChangesAsync();
 
-                return (true, null, result.Key);
+                return (true, null, eventData.Id);
             }
             catch (Exception ex)
             {
@@ -145,10 +113,8 @@ namespace OnlineVoting_and_Ticketing_app.Services
             {
                 eventData.UpdatedAt = DateTime.UtcNow;
 
-                await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionEvents)
-                    .Child(eventData.Id)
-                    .PutAsync(eventData);
+                _context.Events.Update(eventData);
+                await _context.SaveChangesAsync();
 
                 return (true, null);
             }
@@ -162,10 +128,12 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionEvents)
-                    .Child(eventId)
-                    .DeleteAsync();
+                var eventToDelete = await _context.Events.FindAsync(eventId);
+                if (eventToDelete == null)
+                    return false;
+
+                _context.Events.Remove(eventToDelete);
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -179,15 +147,15 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var allEvents = await GetAllEventsAsync();
                 query = query.ToLower();
 
-                return allEvents
+                return await _context.Events
+                    .Include(e => e.TicketTypes)
                     .Where(e => e.IsPublished &&
                            (e.Title.ToLower().Contains(query) ||
                             e.Description.ToLower().Contains(query) ||
                             e.Location.ToLower().Contains(query)))
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {

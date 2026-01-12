@@ -9,7 +9,14 @@
       "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" log --all --full-tree --format=\"\" --name-status)",
       "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" show:*)",
       "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" log --all --oneline)",
-      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" branch -a)"
+      "Bash(git -C \"C:\\\\Users\\\\ZAK I.T. WORLD\\\\Desktop\\\\OnlineVoting_and_Ticketing app\" branch -a)",
+      "Bash(dir:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet build:*)",
+      "Bash(del FirebaseAuthenticationService.cs FirebaseEventService.cs FirebasePollService.cs FirebaseTicketService.cs)",
+      "Bash(dotnet:*)",
+      "Bash(where:*)",
+      "Bash(echo:*)"
     ]
   }
 }

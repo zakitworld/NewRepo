@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              x:Class="OnlineVoting_and_Ticketing_app.Views.Polls.PollsPage"
-             Title="Polls & Voting"
+             Title="Polls &amp; Voting"
              BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
 
     <Grid RowDefinitions="Auto,*">
@@ -14,7 +14,7 @@
             Padding="20"
             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
             <Label
-                Text="Polls & Voting"
+                Text="Polls &amp; Voting"
                 FontSize="28"
                 FontAttributes="Bold"
                 TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />

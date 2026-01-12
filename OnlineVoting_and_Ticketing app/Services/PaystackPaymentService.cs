@@ -8,7 +8,7 @@ namespace OnlineVoting_and_Ticketing_app.Services
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "https://api.paystack.co";
-        private const string SecretKey = "YOUR_PAYSTACK_SECRET_KEY"; // Replace with your actual Paystack secret key
+        private const string SecretKey = "sk_test_5c978a182102d669f43fdcb3817231bced5bb706"; // Replace with your actual Paystack secret key
 
         public PaystackPaymentService()
         {

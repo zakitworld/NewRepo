@@ -1,20 +1,18 @@
-using Firebase.Database;
-using Firebase.Database.Query;
-using OnlineVoting_and_Ticketing_app.Constants;
+using Microsoft.EntityFrameworkCore;
+using OnlineVoting_and_Ticketing_app.Data;
 using OnlineVoting_and_Ticketing_app.Models;
 using QRCoder;
-using System.Text;
 
 namespace OnlineVoting_and_Ticketing_app.Services
 {
-    public class FirebaseTicketService : ITicketService
+    public class SqliteTicketService : ITicketService
     {
-        private readonly FirebaseClient _firebaseClient;
+        private readonly AppDbContext _context;
         private readonly IEventService _eventService;
 
-        public FirebaseTicketService(IEventService eventService)
+        public SqliteTicketService(AppDbContext context, IEventService eventService)
         {
-            _firebaseClient = new FirebaseClient(FirebaseConfig.DatabaseUrl);
+            _context = context;
             _eventService = eventService;
         }
 
@@ -22,32 +20,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var tickets = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionTickets)
-                    .OnceAsync<Ticket>();
-
-                return tickets
-                    .Where(t => t.Object.UserId == userId)
-                    .Select(t => new Ticket
-                    {
-                        Id = t.Key,
-                        EventId = t.Object.EventId,
-                        EventTitle = t.Object.EventTitle,
-                        UserId = t.Object.UserId,
-                        UserName = t.Object.UserName,
-                        UserEmail = t.Object.UserEmail,
-                        TicketTypeId = t.Object.TicketTypeId,
-                        TicketTypeName = t.Object.TicketTypeName,
-                        Price = t.Object.Price,
-                        QRCode = t.Object.QRCode,
-                        Status = t.Object.Status,
-                        PurchasedAt = t.Object.PurchasedAt,
-                        CheckedInAt = t.Object.CheckedInAt,
-                        TransactionId = t.Object.TransactionId,
-                        PaymentStatus = t.Object.PaymentStatus
-                    })
+                return await _context.Tickets
+                    .Where(t => t.UserId == userId)
                     .OrderByDescending(t => t.PurchasedAt)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {
@@ -59,16 +35,7 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var ticket = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionTickets)
-                    .Child(ticketId)
-                    .OnceSingleAsync<Ticket>();
-
-                if (ticket == null)
-                    return null;
-
-                ticket.Id = ticketId;
-                return ticket;
+                return await _context.Tickets.FindAsync(ticketId);
             }
             catch
             {
@@ -91,39 +58,30 @@ namespace OnlineVoting_and_Ticketing_app.Services
                 if (ticketType.AvailableQuantity <= 0)
                     return (false, "Tickets sold out", null);
 
-                var user = Preferences.Get(AppConstants.Preferences.UserName, "User");
-                var email = Preferences.Get(AppConstants.Preferences.UserEmail, "");
-
                 var ticket = new Ticket
                 {
+                    Id = Guid.NewGuid().ToString(),
                     EventId = eventId,
                     EventTitle = eventData.Title,
                     UserId = userId,
-                    UserName = user,
-                    UserEmail = email,
                     TicketTypeId = ticketTypeId,
                     TicketTypeName = ticketType.Name,
                     Price = ticketType.Price,
                     Status = TicketStatus.Active,
                     PurchasedAt = DateTime.UtcNow,
-                    PaymentStatus = PaymentStatus.Pending
+                    PaymentStatus = PaymentStatus.Completed
                 };
 
-                var result = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionTickets)
-                    .PostAsync(ticket);
-
-                ticket.Id = result.Key;
                 ticket.QRCode = await GenerateQRCodeAsync(ticket.Id);
 
-                await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionTickets)
-                    .Child(ticket.Id)
-                    .PutAsync(ticket);
+                _context.Tickets.Add(ticket);
 
+                // Update ticket availability
                 ticketType.AvailableQuantity--;
                 eventData.AvailableTickets--;
                 await _eventService.UpdateEventAsync(eventData);
+
+                await _context.SaveChangesAsync();
 
                 return (true, null, ticket);
             }
@@ -157,10 +115,8 @@ namespace OnlineVoting_and_Ticketing_app.Services
                 ticket.Status = TicketStatus.Used;
                 ticket.CheckedInAt = DateTime.UtcNow;
 
-                await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionTickets)
-                    .Child(ticketId)
-                    .PutAsync(ticket);
+                _context.Tickets.Update(ticket);
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -180,11 +136,9 @@ namespace OnlineVoting_and_Ticketing_app.Services
 
                 ticket.Status = TicketStatus.Cancelled;
 
-                await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionTickets)
-                    .Child(ticketId)
-                    .PutAsync(ticket);
+                _context.Tickets.Update(ticket);
 
+                // Restore ticket availability
                 var eventData = await _eventService.GetEventByIdAsync(ticket.EventId);
                 if (eventData != null)
                 {
@@ -196,6 +150,8 @@ namespace OnlineVoting_and_Ticketing_app.Services
                         await _eventService.UpdateEventAsync(eventData);
                     }
                 }
+
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -226,32 +182,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var tickets = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionTickets)
-                    .OnceAsync<Ticket>();
-
-                return tickets
-                    .Where(t => t.Object.EventId == eventId)
-                    .Select(t => new Ticket
-                    {
-                        Id = t.Key,
-                        EventId = t.Object.EventId,
-                        EventTitle = t.Object.EventTitle,
-                        UserId = t.Object.UserId,
-                        UserName = t.Object.UserName,
-                        UserEmail = t.Object.UserEmail,
-                        TicketTypeId = t.Object.TicketTypeId,
-                        TicketTypeName = t.Object.TicketTypeName,
-                        Price = t.Object.Price,
-                        QRCode = t.Object.QRCode,
-                        Status = t.Object.Status,
-                        PurchasedAt = t.Object.PurchasedAt,
-                        CheckedInAt = t.Object.CheckedInAt,
-                        TransactionId = t.Object.TransactionId,
-                        PaymentStatus = t.Object.PaymentStatus
-                    })
+                return await _context.Tickets
+                    .Where(t => t.EventId == eventId)
                     .OrderByDescending(t => t.PurchasedAt)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {

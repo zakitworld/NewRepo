@@ -39,12 +39,12 @@ namespace OnlineVoting_and_Ticketing_app.Views.Profile
 
         private async void OnMyTicketsTapped(object? sender, EventArgs e)
         {
-            await Shell.Current.GoToAsync("//tickets");
+            await Shell.Current.GoToAsync("//main/tickets");
         }
 
         private async void OnMyEventsTapped(object? sender, EventArgs e)
         {
-            await Shell.Current.GoToAsync("//events");
+            await Shell.Current.GoToAsync("//main/events");
         }
 
         private async void OnSettingsTapped(object? sender, EventArgs e)

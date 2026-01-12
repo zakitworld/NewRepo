@@ -6,9 +6,14 @@ A modern, feature-rich .NET MAUI mobile application for event management, ticket
 
 ### 🎫 Event Management
 - Browse and discover upcoming events
+- Create new events with detailed information
+- Add multiple ticket types with custom pricing
+- Upload event images or use image URLs
 - View detailed event information with images
 - Filter events by category (Music, Sports, Conference, Workshop, etc.)
 - Search events by title, description, or location
+- Set event dates, times, and locations
+- Choose event type (In-person, Virtual, Hybrid)
 - Real-time availability tracking
 
 ### 💳 Ticketing System
@@ -49,20 +54,23 @@ A modern, feature-rich .NET MAUI mobile application for event management, ticket
 - **XAML** - UI markup
 
 ### Backend Services
-- **Firebase Authentication** - User authentication
-- **Firebase Realtime Database** - Data storage
-- **Firebase Storage** - Image and file storage
+- **SQLite** - Local database storage with Entity Framework Core
+- **ASP.NET Identity** - User authentication and authorization
+- **Entity Framework Core** - ORM for database operations
 
 ### Payment Integration
 - **Paystack** - Payment processing for ticket purchases
 - Supports multiple currencies (GHS, NGN, etc.)
 
 ### Third-Party Libraries
+- **Microsoft.EntityFrameworkCore.Sqlite** - SQLite database provider
+- **Microsoft.AspNetCore.Identity** - Authentication and authorization
 - **CommunityToolkit.Mvvm** - MVVM helpers
 - **QRCoder** - QR code generation
 - **SkiaSharp** - Graphics rendering
 - **FFImageLoading.Maui** - Image caching and loading
 - **Newtonsoft.Json** - JSON serialization
+- **BCrypt.Net** - Password hashing
 
 ## Architecture
 
@@ -120,32 +128,22 @@ OnlineVoting_and_Ticketing app/
 3. **Android SDK** (for Android development)
 4. **Xcode** (for iOS development on macOS)
 
-### Firebase Configuration
+### Database Configuration
 
-1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
+The app uses **SQLite** for local data storage with **Entity Framework Core**. The database is automatically created and initialized when the app first launches.
 
-2. Enable the following services:
-   - Authentication (Email/Password, Google, Apple, Facebook)
-   - Realtime Database
-   - Storage
+**Database Location:**
+- Android: `/data/data/com.eventhub.votingandticketing/files/eventhub.db`
+- iOS: `Library/Application Support/eventhub.db`
 
-3. Get your Firebase configuration:
-   - Go to Project Settings
-   - Copy your Web API Key, Database URL, Project ID, etc.
+**Features:**
+- Automatic database creation and migrations
+- ASP.NET Identity for user management
+- Seeded admin account:
+  - Email: `admin@eventhub.com`
+  - Password: `Admin@123`
 
-4. Update `FirebaseConfig.cs` (OnlineVoting_and_Ticketing app/Services/FirebaseConfig.cs):
-```csharp
-public static class FirebaseConfig
-{
-    public const string ApiKey = "YOUR_FIREBASE_API_KEY";
-    public const string AuthDomain = "YOUR_PROJECT_ID.firebaseapp.com";
-    public const string DatabaseUrl = "https://YOUR_PROJECT_ID.firebaseio.com";
-    public const string ProjectId = "YOUR_PROJECT_ID";
-    public const string StorageBucket = "YOUR_PROJECT_ID.appspot.com";
-    public const string MessagingSenderId = "YOUR_MESSAGING_SENDER_ID";
-    public const string AppId = "YOUR_APP_ID";
-}
-```
+**No additional configuration required!** The database is fully self-contained.
 
 ### Paystack Configuration
 
@@ -179,43 +177,28 @@ currency = "GHS", // Change to NGN for Naira, USD for US Dollar, etc.
 
 ### Database Structure
 
-#### Firebase Realtime Database Rules (example):
-```json
-{
-  "rules": {
-    "users": {
-      "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
-      }
-    },
-    "events": {
-      ".read": true,
-      "$eventId": {
-        ".write": "auth != null"
-      }
-    },
-    "tickets": {
-      "$ticketId": {
-        ".read": "auth != null && data.child('userId').val() === auth.uid",
-        ".write": "auth != null"
-      }
-    },
-    "polls": {
-      ".read": true,
-      "$pollId": {
-        ".write": "auth != null"
-      }
-    },
-    "votes": {
-      "$voteId": {
-        ".read": "auth != null",
-        ".write": "auth != null"
-      }
-    }
-  }
-}
-```
+The app uses **SQLite** with **Entity Framework Core**. The database schema includes:
+
+#### Tables
+- **AspNetUsers** - User accounts (ASP.NET Identity)
+- **AspNetRoles** - User roles
+- **AspNetUserRoles** - User-role relationships
+- **Events** - Event information
+- **TicketTypes** - Ticket categories for events
+- **Tickets** - Purchased tickets
+- **Polls** - Voting polls
+- **PollOptions** - Poll choices
+- **Votes** - Cast votes
+
+#### Relationships
+- Events → TicketTypes (One-to-Many)
+- Polls → PollOptions (One-to-Many)
+- Users can create multiple Events and Polls
+- Users can purchase multiple Tickets
+- Users can cast multiple Votes
+
+#### Automatic Migrations
+The database schema is automatically created and updated when the app launches. No manual SQL scripts needed!
 
 ## Key Features Explained
 
@@ -253,7 +236,7 @@ currency = "GHS", // Change to NGN for Naira, USD for US Dollar, etc.
 
 ## Future Enhancements
 
-- [ ] Event creation and management for organizers
+- [ ] Event editing and deletion
 - [ ] Poll creation UI
 - [ ] Advanced poll analytics
 - [ ] Push notifications

@@ -18,35 +18,44 @@ namespace OnlineVoting_and_Ticketing_app.Views.Auth
         {
             ErrorLabel.IsVisible = false;
 
-            var email = EmailEntry.Text?.Trim();
-            var password = PasswordEntry.Text;
-
-            var validation = ValidationHelper.ValidateLogin(email ?? string.Empty, password ?? string.Empty);
-            if (!validation.IsValid)
+            try
             {
-                ErrorLabel.Text = validation.ErrorMessage;
+                var email = EmailEntry.Text?.Trim();
+                var password = PasswordEntry.Text;
+
+                var validation = ValidationHelper.ValidateLogin(email ?? string.Empty, password ?? string.Empty);
+                if (!validation.IsValid)
+                {
+                    ErrorLabel.Text = validation.ErrorMessage;
+                    ErrorLabel.IsVisible = true;
+                    return;
+                }
+
+                LoginButton.IsEnabled = false;
+                LoginButton.Text = "Signing in...";
+
+                var (success, error, user) = await _authService.LoginWithEmailPasswordAsync(email!, password!);
+
+                if (success && user != null)
+                {
+                    await Shell.Current.GoToAsync("//main/home");
+                }
+                else
+                {
+                    ErrorLabel.Text = error ?? AppConstants.Messages.UnknownError;
+                    ErrorLabel.IsVisible = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLabel.Text = $"Login failed: {ex.Message}";
                 ErrorLabel.IsVisible = true;
-                return;
             }
-
-            LoginButton.IsEnabled = false;
-            LoginButton.Text = "Signing in...";
-
-            var (success, error, user) = await _authService.LoginWithEmailPasswordAsync(email!, password!);
-
-            if (success && user != null)
+            finally
             {
-                await DisplayAlert("Success", AppConstants.Messages.LoginSuccess, "OK");
-                await Shell.Current.GoToAsync($"//{AppConstants.Routes.Home}");
+                LoginButton.IsEnabled = true;
+                LoginButton.Text = "Sign In";
             }
-            else
-            {
-                ErrorLabel.Text = error ?? AppConstants.Messages.UnknownError;
-                ErrorLabel.IsVisible = true;
-            }
-
-            LoginButton.IsEnabled = true;
-            LoginButton.Text = "Sign In";
         }
 
         private async void OnGoogleLoginTapped(object? sender, EventArgs e)
@@ -58,8 +67,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Auth
 
             if (success && user != null)
             {
-                await DisplayAlert("Success", AppConstants.Messages.LoginSuccess, "OK");
-                await Shell.Current.GoToAsync($"//{AppConstants.Routes.Home}");
+                await Shell.Current.GoToAsync("//main/home");
             }
             else
             {
@@ -79,8 +87,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Auth
 
             if (success && user != null)
             {
-                await DisplayAlert("Success", AppConstants.Messages.LoginSuccess, "OK");
-                await Shell.Current.GoToAsync($"//{AppConstants.Routes.Home}");
+                await Shell.Current.GoToAsync("//main/home");
             }
             else
             {

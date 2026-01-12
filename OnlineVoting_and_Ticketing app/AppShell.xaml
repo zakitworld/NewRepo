@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:OnlineVoting_and_Ticketing_app"
+    xmlns:auth="clr-namespace:OnlineVoting_and_Ticketing_app.Views.Auth"
     xmlns:events="clr-namespace:OnlineVoting_and_Ticketing_app.Views.Events"
     xmlns:tickets="clr-namespace:OnlineVoting_and_Ticketing_app.Views.Tickets"
     xmlns:polls="clr-namespace:OnlineVoting_and_Ticketing_app.Views.Polls"
@@ -11,7 +12,15 @@
     Title="EventHub"
     FlyoutBehavior="Disabled">
 
-    <TabBar>
+    <!-- Authentication Pages (No TabBar) -->
+    <ShellContent
+        x:Name="LoginShellContent"
+        Title="Login"
+        ContentTemplate="{DataTemplate auth:LoginPage}"
+        Route="login" />
+
+    <!-- Main App Pages (With TabBar) -->
+    <TabBar x:Name="MainTabBar" Route="main">
         <ShellContent
             Title="Home"
             ContentTemplate="{DataTemplate local:MainPage}"

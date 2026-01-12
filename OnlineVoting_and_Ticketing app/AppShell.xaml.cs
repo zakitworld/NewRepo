@@ -17,14 +17,14 @@ namespace OnlineVoting_and_Ticketing_app
 
             // Event Routes
             Routing.RegisterRoute("eventdetails", typeof(EventDetailsPage));
-            Routing.RegisterRoute("createevent", typeof(EventDetailsPage));
+            Routing.RegisterRoute("createevent", typeof(CreateEventPage));
 
             // Ticket Routes
             Routing.RegisterRoute("ticketdetails", typeof(TicketDetailsPage));
 
             // Poll Routes
             Routing.RegisterRoute("polldetails", typeof(PollsPage));
-            Routing.RegisterRoute("createpoll", typeof(PollsPage));
+            Routing.RegisterRoute("createpoll", typeof(CreatePollPage));
         }
     }
 }

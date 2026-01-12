@@ -62,7 +62,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
         private async void OnCategoryTapped(object? sender, EventArgs e)
         {
-            if (sender is not Border border || border.CommandParameter is not string category)
+            if (sender is not TapGestureRecognizer gesture || gesture.CommandParameter is not string category)
                 return;
 
             LoadingIndicator.IsVisible = true;

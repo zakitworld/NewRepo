@@ -1,51 +1,26 @@
-using Firebase.Database;
-using Firebase.Database.Query;
-using OnlineVoting_and_Ticketing_app.Constants;
+using Microsoft.EntityFrameworkCore;
+using OnlineVoting_and_Ticketing_app.Data;
 using OnlineVoting_and_Ticketing_app.Models;
 
 namespace OnlineVoting_and_Ticketing_app.Services
 {
-    public class FirebasePollService : IPollService
+    public class SqlitePollService : IPollService
     {
-        private readonly FirebaseClient _firebaseClient;
+        private readonly AppDbContext _context;
 
-        public FirebasePollService()
+        public SqlitePollService(AppDbContext context)
         {
-            _firebaseClient = new FirebaseClient(FirebaseConfig.DatabaseUrl);
+            _context = context;
         }
 
         public async Task<List<Poll>> GetAllPollsAsync()
         {
             try
             {
-                var polls = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionPolls)
-                    .OnceAsync<Poll>();
-
-                return polls
-                    .Select(p => new Poll
-                    {
-                        Id = p.Key,
-                        Title = p.Object.Title,
-                        Description = p.Object.Description,
-                        ImageUrl = p.Object.ImageUrl,
-                        CreatorId = p.Object.CreatorId,
-                        CreatorName = p.Object.CreatorName,
-                        EventId = p.Object.EventId,
-                        StartDate = p.Object.StartDate,
-                        EndDate = p.Object.EndDate,
-                        Status = p.Object.Status,
-                        Type = p.Object.Type,
-                        AllowMultipleChoices = p.Object.AllowMultipleChoices,
-                        IsAnonymous = p.Object.IsAnonymous,
-                        RequireAuthentication = p.Object.RequireAuthentication,
-                        Options = p.Object.Options,
-                        TotalVotes = p.Object.TotalVotes,
-                        CreatedAt = p.Object.CreatedAt,
-                        UpdatedAt = p.Object.UpdatedAt
-                    })
+                return await _context.Polls
+                    .Include(p => p.Options)
                     .OrderByDescending(p => p.CreatedAt)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {
@@ -57,14 +32,14 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var allPolls = await GetAllPollsAsync();
                 var now = DateTime.UtcNow;
 
-                return allPolls
+                return await _context.Polls
+                    .Include(p => p.Options)
                     .Where(p => p.Status == PollStatus.Active &&
                                p.StartDate <= now &&
                                p.EndDate >= now)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {
@@ -76,16 +51,9 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var poll = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionPolls)
-                    .Child(pollId)
-                    .OnceSingleAsync<Poll>();
-
-                if (poll == null)
-                    return null;
-
-                poll.Id = pollId;
-                return poll;
+                return await _context.Polls
+                    .Include(p => p.Options)
+                    .FirstOrDefaultAsync(p => p.Id == pollId);
             }
             catch
             {
@@ -97,10 +65,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var allPolls = await GetAllPollsAsync();
-                return allPolls
+                return await _context.Polls
+                    .Include(p => p.Options)
                     .Where(p => p.CreatorId == creatorId)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {
@@ -112,10 +80,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var allPolls = await GetAllPollsAsync();
-                return allPolls
+                return await _context.Polls
+                    .Include(p => p.Options)
                     .Where(p => p.EventId == eventId)
-                    .ToList();
+                    .ToListAsync();
             }
             catch
             {
@@ -127,6 +95,7 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
+                pollData.Id = Guid.NewGuid().ToString();
                 pollData.CreatedAt = DateTime.UtcNow;
                 pollData.UpdatedAt = DateTime.UtcNow;
                 pollData.TotalVotes = 0;
@@ -134,15 +103,15 @@ namespace OnlineVoting_and_Ticketing_app.Services
                 for (int i = 0; i < pollData.Options.Count; i++)
                 {
                     pollData.Options[i].Id = Guid.NewGuid().ToString();
+                    pollData.Options[i].PollId = pollData.Id;
                     pollData.Options[i].Order = i;
                     pollData.Options[i].VoteCount = 0;
                 }
 
-                var result = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionPolls)
-                    .PostAsync(pollData);
+                _context.Polls.Add(pollData);
+                await _context.SaveChangesAsync();
 
-                return (true, null, result.Key);
+                return (true, null, pollData.Id);
             }
             catch (Exception ex)
             {
@@ -156,10 +125,8 @@ namespace OnlineVoting_and_Ticketing_app.Services
             {
                 pollData.UpdatedAt = DateTime.UtcNow;
 
-                await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionPolls)
-                    .Child(pollData.Id)
-                    .PutAsync(pollData);
+                _context.Polls.Update(pollData);
+                await _context.SaveChangesAsync();
 
                 return (true, null);
             }
@@ -173,23 +140,17 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionPolls)
-                    .Child(pollId)
-                    .DeleteAsync();
+                var poll = await _context.Polls.FindAsync(pollId);
+                if (poll == null)
+                    return false;
 
-                var votes = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionVotes)
-                    .OnceAsync<Vote>();
+                _context.Polls.Remove(poll);
 
-                var pollVotes = votes.Where(v => v.Object.PollId == pollId);
-                foreach (var vote in pollVotes)
-                {
-                    await _firebaseClient
-                        .Child(AppConstants.Firebase.CollectionVotes)
-                        .Child(vote.Key)
-                        .DeleteAsync();
-                }
+                // Remove associated votes
+                var votes = await _context.Votes.Where(v => v.PollId == pollId).ToListAsync();
+                _context.Votes.RemoveRange(votes);
+
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -226,16 +187,16 @@ namespace OnlineVoting_and_Ticketing_app.Services
 
                 var vote = new Vote
                 {
+                    Id = Guid.NewGuid().ToString(),
                     PollId = pollId,
                     UserId = userId,
                     SelectedOptionIds = selectedOptionIds,
                     VotedAt = DateTime.UtcNow
                 };
 
-                await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionVotes)
-                    .PostAsync(vote);
+                _context.Votes.Add(vote);
 
+                // Update vote counts
                 foreach (var optionId in selectedOptionIds)
                 {
                     var option = poll.Options.FirstOrDefault(o => o.Id == optionId);
@@ -247,6 +208,8 @@ namespace OnlineVoting_and_Ticketing_app.Services
 
                 poll.TotalVotes++;
                 await UpdatePollAsync(poll);
+
+                await _context.SaveChangesAsync();
 
                 return (true, null);
             }
@@ -260,11 +223,8 @@ namespace OnlineVoting_and_Ticketing_app.Services
         {
             try
             {
-                var votes = await _firebaseClient
-                    .Child(AppConstants.Firebase.CollectionVotes)
-                    .OnceAsync<Vote>();
-
-                return votes.Any(v => v.Object.PollId == pollId && v.Object.UserId == userId);
+                return await _context.Votes
+                    .AnyAsync(v => v.PollId == pollId && v.UserId == userId);
             }
             catch
             {
