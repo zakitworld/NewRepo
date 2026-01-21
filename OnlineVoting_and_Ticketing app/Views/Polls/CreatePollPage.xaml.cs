@@ -13,22 +13,29 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
         public CreatePollPage(IPollService pollService)
         {
             InitializeComponent();
-            _pollService = pollService;
+            _pollService = pollService ?? throw new ArgumentNullException(nameof(pollService));
 
-            // Set minimum and default dates
-            StartDatePicker.MinimumDate = DateTime.Now;
-            EndDatePicker.MinimumDate = DateTime.Now;
-            StartDatePicker.Date = DateTime.Now;
-            EndDatePicker.Date = DateTime.Now.AddDays(7);
-            StartTimePicker.Time = DateTime.Now.TimeOfDay;
-            EndTimePicker.Time = new TimeSpan(23, 59, 0);
+            try
+            {
+                // Set minimum and default dates
+                StartDatePicker.MinimumDate = DateTime.Now;
+                EndDatePicker.MinimumDate = DateTime.Now;
+                StartDatePicker.Date = DateTime.Now;
+                EndDatePicker.Date = DateTime.Now.AddDays(7);
+                StartTimePicker.Time = DateTime.Now.TimeOfDay;
+                EndTimePicker.Time = new TimeSpan(23, 59, 0);
 
-            // Set default poll type
-            PollTypePicker.SelectedIndex = 0;
+                // Set default poll type
+                PollTypePicker.SelectedIndex = 0;
 
-            // Add default options
-            AddOptionView();
-            AddOptionView();
+                // Add default options
+                AddOptionView();
+                AddOptionView();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"CreatePollPage initialization error: {ex.Message}");
+            }
         }
 
         private void OnPollTypeChanged(object? sender, EventArgs e)
@@ -56,7 +63,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
             OptionsContainer.Children.Add(optionView);
         }
 
-        private void RemoveOptionView(PollOptionView? view)
+        private async void RemoveOptionView(PollOptionView? view)
         {
             if (view != null && _optionViews.Count > 2)
             {
@@ -71,7 +78,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
             }
             else if (_optionViews.Count == 2)
             {
-                DisplayAlert("Error", "At least 2 options are required", "OK");
+                await DisplayAlertAsync("Error", "At least 2 options are required", "OK");
             }
         }
 
@@ -132,8 +139,8 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
 
             try
             {
-                var userId = Preferences.Get(AppConstants.Preferences.UserId, string.Empty);
-                var userName = Preferences.Get(AppConstants.Preferences.UserName, "User");
+                var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
+                var userName = await SecureStorage.GetAsync(AppConstants.Preferences.UserName) ?? "User";
 
                 var pollType = PollTypePicker.SelectedIndex == 0 ? PollType.SingleChoice : PollType.MultipleChoice;
 
@@ -141,7 +148,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
                 {
                     Title = TitleEntry.Text.Trim(),
                     Description = DescriptionEditor.Text?.Trim() ?? string.Empty,
-                    CreatorId = userId,
+                    CreatorId = userId ?? string.Empty,
                     CreatorName = userName,
                     StartDate = startDateTime ?? DateTime.UtcNow,
                     EndDate = endDateTime ?? DateTime.UtcNow.AddDays(1),
@@ -160,7 +167,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
 
                 if (success && !string.IsNullOrEmpty(pollId))
                 {
-                    await DisplayAlert("Success", "Poll created successfully!", "OK");
+                    await DisplayAlertAsync("Success", "Poll created successfully!", "OK");
                     await Shell.Current.GoToAsync("//polls");
                 }
                 else
@@ -181,7 +188,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
 
         private async void OnCancelClicked(object? sender, EventArgs e)
         {
-            var confirm = await DisplayAlert("Cancel", "Are you sure you want to cancel? All changes will be lost.", "Yes", "No");
+            var confirm = await DisplayAlertAsync("Cancel", "Are you sure you want to cancel? All changes will be lost.", "Yes", "No");
             if (confirm)
             {
                 await Shell.Current.GoToAsync("..");
@@ -205,15 +212,11 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
 
         public PollOptionView(int number)
         {
-            StrokeShape = new RoundRectangle { CornerRadius = 10 };
-            Stroke = Application.Current?.RequestedTheme == AppTheme.Dark
-                ? Color.FromArgb("#374151")
-                : Color.FromArgb("#E5E7EB");
+            StrokeShape = new RoundRectangle { CornerRadius = 15 };
+            Stroke = (Color)(Application.Current?.Resources["GlassBorderBrush"] ?? Colors.Transparent);
             StrokeThickness = 1;
-            BackgroundColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                ? Color.FromArgb("#1F2937")
-                : Colors.White;
-            Padding = 12;
+            BackgroundColor = (Color)(Application.Current?.Resources["GlassBrush"] ?? Colors.Transparent);
+            Padding = new Thickness(15, 8);
 
             var grid = new Grid
             {
@@ -223,38 +226,39 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
                     new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                     new ColumnDefinition { Width = GridLength.Auto }
                 },
-                ColumnSpacing = 12
+                ColumnSpacing = 15
             };
 
             // Option number
             _numberLabel = new Label
             {
                 Text = $"{number}.",
-                FontSize = 15,
+                FontSize = 14,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Color.FromArgb("#9CA3AF")
-                    : Color.FromArgb("#6B7280"),
-                VerticalOptions = LayoutOptions.Center
+                TextColor = (Color)(Application.Current?.Resources["Primary"] ?? Colors.Purple),
+                VerticalOptions = LayoutOptions.Center,
+                Margin = new Thickness(5, 0, 0, 0)
             };
 
             // Option text entry
             _optionEntry = new Entry
             {
-                Placeholder = "Enter option text",
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Colors.White
-                    : Color.FromArgb("#111827"),
-                PlaceholderColor = Color.FromArgb("#9CA3AF")
+                Placeholder = "Option Text",
+                TextColor = Colors.White,
+                PlaceholderColor = (Color)(Application.Current?.Resources["TextSecondary"] ?? Colors.Gray),
+                FontSize = 14,
+                VerticalOptions = LayoutOptions.Center
             };
 
             // Remove button
             var removeButton = new Label
             {
-                Text = "✕",
-                FontSize = 18,
-                TextColor = Color.FromArgb("#EF4444"),
-                VerticalOptions = LayoutOptions.Center
+                Text = "Remove",
+                FontSize = 11,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = (Color)(Application.Current?.Resources["Error"] ?? Colors.Red),
+                VerticalOptions = LayoutOptions.Center,
+                Margin = new Thickness(0, 0, 5, 0)
             };
 
             var tapGesture = new TapGestureRecognizer();

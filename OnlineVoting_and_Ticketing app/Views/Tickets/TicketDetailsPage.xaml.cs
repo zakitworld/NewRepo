@@ -35,7 +35,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Tickets
 
             if (_currentTicket == null)
             {
-                await DisplayAlert("Error", "Ticket not found", "OK");
+                await DisplayAlertAsync("Error", "Ticket not found", "OK");
                 await Shell.Current.GoToAsync("..");
                 return;
             }
@@ -45,22 +45,25 @@ namespace OnlineVoting_and_Ticketing_app.Views.Tickets
             TicketHolderLabel.Text = _currentTicket.UserName;
             PriceLabel.Text = $"GH₵ {_currentTicket.Price:F2}";
             PurchaseDateLabel.Text = _currentTicket.PurchasedAt.ToString("MMM dd, yyyy");
-            StatusLabel.Text = _currentTicket.Status.ToString();
-            TicketIdLabel.Text = _currentTicket.Id;
+            StatusLabel.Text = _currentTicket.Status.ToString().ToUpper();
 
             switch (_currentTicket.Status)
             {
                 case TicketStatus.Active:
-                    StatusBorder.BackgroundColor = Color.FromArgb("#10B981");
+                    StatusBorder.BackgroundColor = Color.FromArgb("#2010B981");
+                    StatusLabel.TextColor = Color.FromArgb("#10B981");
                     break;
                 case TicketStatus.Used:
-                    StatusBorder.BackgroundColor = Color.FromArgb("#6B7280");
+                    StatusBorder.BackgroundColor = Color.FromArgb("#206B7280");
+                    StatusLabel.TextColor = Color.FromArgb("#9CA3AF");
                     break;
                 case TicketStatus.Cancelled:
-                    StatusBorder.BackgroundColor = Color.FromArgb("#EF4444");
+                    StatusBorder.BackgroundColor = Color.FromArgb("#20EF4444");
+                    StatusLabel.TextColor = Color.FromArgb("#F87171");
                     break;
                 case TicketStatus.Expired:
-                    StatusBorder.BackgroundColor = Color.FromArgb("#F59E0B");
+                    StatusBorder.BackgroundColor = Color.FromArgb("#20F59E0B");
+                    StatusLabel.TextColor = Color.FromArgb("#FBBF24");
                     break;
             }
 
@@ -81,7 +84,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Tickets
             if (_currentTicket == null)
                 return;
 
-            await DisplayAlert("Download", "Ticket download feature coming soon!", "OK");
+            await DisplayAlertAsync("Download", "Ticket download feature coming soon!", "OK");
         }
 
         private async void OnShareTicketClicked(object? sender, EventArgs e)
@@ -99,7 +102,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Tickets
             }
             catch
             {
-                await DisplayAlert("Error", "Unable to share ticket", "OK");
+                await DisplayAlertAsync("Error", "Unable to share ticket", "OK");
             }
         }
     }

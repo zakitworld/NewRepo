@@ -1,344 +1,154 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OnlineVoting_and_Ticketing_app.Views.Events.CreateEventPage"
              Title="Create Event"
-             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+             BackgroundColor="{StaticResource Background}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <Grid RowDefinitions="*">
+        <!-- Background Glow -->
+        <Ellipse WidthRequest="400" HeightRequest="400" 
+                 Fill="{StaticResource Primary}" Opacity="0.03" 
+                 VerticalOptions="Start" HorizontalOptions="End" Margin="0,-200,-200,0"/>
 
-            <Label
-                Text="Create New Event"
-                FontSize="28"
-                FontAttributes="Bold"
-                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                Margin="0,10,0,0" />
+        <ScrollView>
+            <VerticalStackLayout Padding="25" Spacing="25">
 
-            <Label
-                Text="Fill in the details below to create your event"
-                FontSize="14"
-                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
-                Margin="0,0,0,10" />
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Host an Event" Style="{StaticResource Headline}" HorizontalOptions="Start" TextColor="{StaticResource White}"/>
+                    <Label Text="Fill in the details to launch your experience." FontSize="14" TextColor="{StaticResource TextSecondary}"/>
+                </VerticalStackLayout>
 
-            <!-- Event Image -->
-            <VerticalStackLayout Spacing="10">
-                <Label
-                    Text="Event Image"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-
-                <Border
-                    StrokeShape="RoundRectangle 15"
-                    StrokeThickness="2"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
-                    HeightRequest="200">
-                    <Grid>
-                        <Image
-                            x:Name="EventImagePreview"
-                            Aspect="AspectFill"
-                            IsVisible="False" />
-                        <VerticalStackLayout
-                            x:Name="ImagePlaceholder"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Center"
-                            Spacing="10">
-                            <Label
-                                Text="📷"
-                                FontSize="50"
-                                HorizontalOptions="Center" />
-                            <Label
-                                Text="Tap to add event image"
-                                FontSize="14"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}"
-                                HorizontalOptions="Center" />
-                        </VerticalStackLayout>
-                    </Grid>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnSelectImageTapped" />
-                    </Border.GestureRecognizers>
-                </Border>
-
-                <Entry
-                    x:Name="ImageUrlEntry"
-                    Placeholder="Or paste image URL here"
-                    TextChanged="OnImageUrlChanged"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                    PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}" />
-            </VerticalStackLayout>
-
-            <!-- Event Title -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="Event Title *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15,10">
-                    <Entry
-                        x:Name="TitleEntry"
-                        Placeholder="Enter event title"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}" />
-                </Border>
-            </VerticalStackLayout>
-
-            <!-- Event Description -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="Description *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15,10">
-                    <Editor
-                        x:Name="DescriptionEditor"
-                        Placeholder="Describe your event"
-                        HeightRequest="120"
-                        AutoSize="TextChanges"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}" />
-                </Border>
-            </VerticalStackLayout>
-
-            <!-- Location -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="Location *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15,10">
-                    <Entry
-                        x:Name="LocationEntry"
-                        Placeholder="Event venue or address"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}" />
-                </Border>
-            </VerticalStackLayout>
-
-            <!-- Start Date & Time -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="Start Date &amp; Time *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <Border
-                        Grid.Column="0"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 10"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                        Padding="15,10">
-                        <DatePicker
-                            x:Name="StartDatePicker"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                            Format="MMM dd, yyyy" />
+                <!-- Event Visual -->
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="EVENT COVER" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                    <Border StrokeShape="RoundRectangle 20" HeightRequest="220" Padding="0">
+                        <Grid>
+                            <Image x:Name="EventImagePreview" Aspect="AspectFill" IsVisible="False" />
+                            <Rectangle Fill="{StaticResource Surface}" Opacity="0.5" />
+                            <VerticalStackLayout x:Name="ImagePlaceholder" VerticalOptions="Center" HorizontalOptions="Center" Spacing="15">
+                                <Label Text="🖼️" FontSize="44" HorizontalOptions="Center" Opacity="0.6"/>
+                                <Label Text="Tap to upload cover image" FontSize="13" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSelectImageTapped" />
+                        </Border.GestureRecognizers>
                     </Border>
-                    <Border
-                        Grid.Column="1"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 10"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                        Padding="15,10">
-                        <TimePicker
-                            x:Name="StartTimePicker"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                            Format="h:mm tt" />
+                    <Border Padding="15,2" HeightRequest="50">
+                        <Entry x:Name="ImageUrlEntry" Placeholder="Or paste cover URL here" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="13" VerticalOptions="Center" TextChanged="OnImageUrlChanged" />
                     </Border>
+                </VerticalStackLayout>
+
+                <!-- General Info -->
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="EVENT DETAILS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                    
+                    <VerticalStackLayout Spacing="8">
+                        <Border Padding="18,5">
+                            <Entry x:Name="TitleEntry" Placeholder="Event Title (e.g. Neon Nights)" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Border Padding="18,10">
+                            <Editor x:Name="DescriptionEditor" Placeholder="Share the story behind your event..." TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" HeightRequest="120" AutoSize="TextChanges" FontSize="15" BackgroundColor="Transparent"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Border Padding="18,5">
+                            <Entry x:Name="LocationEntry" Placeholder="Venue or Online Link" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15" />
+                        </Border>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Date & Time Section -->
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="SCHEDULE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                    
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Starts" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Border Grid.Column="0" Padding="15,5">
+                                <DatePicker x:Name="StartDatePicker" TextColor="{StaticResource White}" Format="MMM dd, yyyy" FontSize="14" BackgroundColor="Transparent"/>
+                            </Border>
+                            <Border Grid.Column="1" Padding="15,5">
+                                <TimePicker x:Name="StartTimePicker" TextColor="{StaticResource White}" Format="h:mm tt" FontSize="14" BackgroundColor="Transparent"/>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Ends" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Border Grid.Column="0" Padding="15,5">
+                                <DatePicker x:Name="EndDatePicker" TextColor="{StaticResource White}" Format="MMM dd, yyyy" FontSize="14" BackgroundColor="Transparent"/>
+                            </Border>
+                            <Border Grid.Column="1" Padding="15,5">
+                                <TimePicker x:Name="EndTimePicker" TextColor="{StaticResource White}" Format="h:mm tt" FontSize="14" BackgroundColor="Transparent"/>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Categorization -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="CATEGORY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                        <Border Padding="15,5">
+                            <Picker x:Name="CategoryPicker" Title="Select" TextColor="{StaticResource White}" TitleColor="{StaticResource TextSecondary}" FontSize="14" BackgroundColor="Transparent">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Music</x:String>
+                                        <x:String>Sports</x:String>
+                                        <x:String>Conference</x:String>
+                                        <x:String>Workshop</x:String>
+                                        <x:String>Exhibition</x:String>
+                                        <x:String>Festival</x:String>
+                                        <x:String>Theater</x:String>
+                                        <x:String>Comedy</x:String>
+                                        <x:String>Other</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="10" Grid.Column="1">
+                        <Label Text="DELIVERY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                        <Border Padding="15,5">
+                            <Picker x:Name="EventTypePicker" Title="Select" TextColor="{StaticResource White}" TitleColor="{StaticResource TextSecondary}" FontSize="14" BackgroundColor="Transparent">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>InPerson</x:String>
+                                        <x:String>Virtual</x:String>
+                                        <x:String>Hybrid</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </Border>
+                    </VerticalStackLayout>
                 </Grid>
-            </VerticalStackLayout>
 
-            <!-- End Date & Time -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="End Date &amp; Time *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <Border
-                        Grid.Column="0"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 10"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                        Padding="15,10">
-                        <DatePicker
-                            x:Name="EndDatePicker"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                            Format="MMM dd, yyyy" />
-                    </Border>
-                    <Border
-                        Grid.Column="1"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 10"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                        Padding="15,10">
-                        <TimePicker
-                            x:Name="EndTimePicker"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                            Format="h:mm tt" />
-                    </Border>
+                <!-- Ticket Types Section -->
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="TICKET TIERS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                    
+                    <VerticalStackLayout x:Name="TicketTypesContainer" Spacing="15" />
+
+                    <Button Text="+ Add Another Tier" Clicked="OnAddTicketTypeClicked" BackgroundColor="Transparent" TextColor="{StaticResource Primary}" BorderColor="{StaticResource Primary}" BorderWidth="1" HeightRequest="50" CornerRadius="15"/>
+                </VerticalStackLayout>
+
+                <!-- Error Message -->
+                <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" FontSize="13" IsVisible="False" HorizontalTextAlignment="Center" Margin="0,10" />
+
+                <!-- Action Buttons -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,0,0,30">
+                    <Button Grid.Column="0" Text="Discard" Clicked="OnCancelClicked" BackgroundColor="Transparent" TextColor="{StaticResource TextSecondary}" BorderColor="{StaticResource GlassBorderBrush}" BorderWidth="1" HeightRequest="56" CornerRadius="15" />
+                    <Button Grid.Column="1" x:Name="CreateButton" Text="CREATE EVENT" Clicked="OnCreateEventClicked" Style="{StaticResource Button}" HeightRequest="56" CornerRadius="15" />
                 </Grid>
+
             </VerticalStackLayout>
-
-            <!-- Category -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="Category *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15,10">
-                    <Picker
-                        x:Name="CategoryPicker"
-                        Title="Select category"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        TitleColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>Music</x:String>
-                                <x:String>Sports</x:String>
-                                <x:String>Conference</x:String>
-                                <x:String>Workshop</x:String>
-                                <x:String>Exhibition</x:String>
-                                <x:String>Festival</x:String>
-                                <x:String>Theater</x:String>
-                                <x:String>Comedy</x:String>
-                                <x:String>Other</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
-                </Border>
-            </VerticalStackLayout>
-
-            <!-- Event Type -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="Event Type *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15,10">
-                    <Picker
-                        x:Name="EventTypePicker"
-                        Title="Select event type"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        TitleColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>InPerson</x:String>
-                                <x:String>Virtual</x:String>
-                                <x:String>Hybrid</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
-                </Border>
-            </VerticalStackLayout>
-
-            <!-- Ticket Types Section -->
-            <VerticalStackLayout Spacing="15">
-                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                    <Label
-                        Text="Ticket Types"
-                        FontSize="16"
-                        FontAttributes="Bold"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        VerticalOptions="Center" />
-                    <Border
-                        StrokeShape="RoundRectangle 15"
-                        StrokeThickness="0"
-                        BackgroundColor="{StaticResource Primary}"
-                        Padding="8,4">
-                        <Label
-                            Text="Required"
-                            FontSize="10"
-                            TextColor="White"
-                            FontAttributes="Bold" />
-                    </Border>
-                </HorizontalStackLayout>
-
-                <VerticalStackLayout
-                    x:Name="TicketTypesContainer"
-                    Spacing="15" />
-
-                <Button
-                    Text="+ Add Ticket Type"
-                    Clicked="OnAddTicketTypeClicked"
-                    BackgroundColor="Transparent"
-                    TextColor="{StaticResource Primary}"
-                    BorderColor="{StaticResource Primary}"
-                    BorderWidth="2"
-                    CornerRadius="10"
-                    HeightRequest="50" />
-            </VerticalStackLayout>
-
-            <!-- Error Message -->
-            <Label
-                x:Name="ErrorLabel"
-                TextColor="Red"
-                FontSize="14"
-                IsVisible="False"
-                HorizontalTextAlignment="Center"
-                Margin="0,10,0,0" />
-
-            <!-- Action Buttons -->
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,10,0,20">
-                <Button
-                    Grid.Column="0"
-                    Text="Cancel"
-                    Clicked="OnCancelClicked"
-                    BackgroundColor="Transparent"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
-                    BorderColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    BorderWidth="1"
-                    CornerRadius="10"
-                    HeightRequest="50" />
-
-                <Button
-                    Grid.Column="1"
-                    x:Name="CreateButton"
-                    Text="Create Event"
-                    Clicked="OnCreateEventClicked"
-                    BackgroundColor="{StaticResource Primary}"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50" />
-            </Grid>
-
-        </VerticalStackLayout>
-    </ScrollView>
-
+        </ScrollView>
+    </Grid>
 </ContentPage>

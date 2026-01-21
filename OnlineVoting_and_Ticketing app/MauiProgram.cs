@@ -50,6 +50,10 @@ namespace OnlineVoting_and_Ticketing_app
             builder.Services.AddScoped<IPollService, SqlitePollService>();
             builder.Services.AddScoped<ITicketService, SqliteTicketService>();
             builder.Services.AddSingleton<IPaymentService, PaystackPaymentService>();
+            builder.Services.AddSingleton<IConnectivityService, ConnectivityService>();
+
+            // ViewModels
+            builder.Services.AddTransient<OnlineVoting_and_Ticketing_app.ViewModels.Auth.LoginViewModel>();
 
             // Pages - Auth
             builder.Services.AddTransient<OnlineVoting_and_Ticketing_app.Views.Auth.LoginPage>();
@@ -66,9 +70,11 @@ namespace OnlineVoting_and_Ticketing_app
             builder.Services.AddTransient<OnlineVoting_and_Ticketing_app.Views.Polls.CreatePollPage>();
             builder.Services.AddTransient<OnlineVoting_and_Ticketing_app.Views.Polls.PollDetailsPage>();
             builder.Services.AddTransient<OnlineVoting_and_Ticketing_app.Views.Profile.ProfilePage>();
+            builder.Services.AddTransient<OnlineVoting_and_Ticketing_app.Views.Profile.EditProfilePage>();
+            builder.Services.AddTransient<OnlineVoting_and_Ticketing_app.Views.Profile.SettingsPage>();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

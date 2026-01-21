@@ -1,0 +1,232 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineVoting_and_Ticketing_app.Views.Profile.SettingsPage"
+             Title="Settings"
+             BackgroundColor="{StaticResource Background}">
+
+    <Grid>
+        <!-- Background Glow -->
+        <Ellipse WidthRequest="400" HeightRequest="400" Fill="{StaticResource Primary}" Opacity="0.05"
+                 VerticalOptions="End" HorizontalOptions="Start" Margin="-150,0,0,-150"/>
+
+        <ScrollView>
+            <VerticalStackLayout Padding="25" Spacing="30">
+
+                <!-- Header -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Settings" Style="{StaticResource Headline}" HorizontalOptions="Start" TextColor="{StaticResource White}"/>
+                    <Label Text="Customize your app experience" FontSize="14" TextColor="{StaticResource TextSecondary}"/>
+                </VerticalStackLayout>
+
+                <!-- Appearance Section -->
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="APPEARANCE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+
+                    <Border Style="{StaticResource Border}" Padding="20">
+                        <VerticalStackLayout Spacing="20">
+                            <!-- Dark Mode -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                <Label Text="+" FontSize="24" VerticalOptions="Center" TextColor="{StaticResource Primary}"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Dark Mode" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Use dark theme throughout the app" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="DarkModeSwitch" Grid.Column="2" IsToggled="True" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" Toggled="OnDarkModeToggled"/>
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="{StaticResource GlassBorderBrush}" Opacity="0.5"/>
+
+                            <!-- Accent Color -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                <Label Text="+" FontSize="24" VerticalOptions="Center" TextColor="{StaticResource Primary}"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Accent Color" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Choose your preferred accent color" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Border Grid.Column="2" StrokeShape="RoundRectangle 8" WidthRequest="40" HeightRequest="40" Padding="0">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnAccentColorTapped"/>
+                                    </Border.GestureRecognizers>
+                                    <BoxView x:Name="AccentColorPreview" Color="{StaticResource Primary}" CornerRadius="8"/>
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Accent Color Options (Hidden by default) -->
+                    <Border x:Name="AccentColorOptions" Style="{StaticResource Border}" Padding="15" IsVisible="False">
+                        <FlexLayout Wrap="Wrap" JustifyContent="SpaceEvenly">
+                            <Border StrokeShape="RoundRectangle 20" WidthRequest="40" HeightRequest="40" Margin="5" Stroke="Transparent">
+                                <BoxView BackgroundColor="#8B5CF6" CornerRadius="20"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnColorSelected" CommandParameter="#8B5CF6"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border StrokeShape="RoundRectangle 20" WidthRequest="40" HeightRequest="40" Margin="5" Stroke="Transparent">
+                                <BoxView BackgroundColor="#3B82F6" CornerRadius="20"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnColorSelected" CommandParameter="#3B82F6"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border StrokeShape="RoundRectangle 20" WidthRequest="40" HeightRequest="40" Margin="5" Stroke="Transparent">
+                                <BoxView BackgroundColor="#10B981" CornerRadius="20"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnColorSelected" CommandParameter="#10B981"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border StrokeShape="RoundRectangle 20" WidthRequest="40" HeightRequest="40" Margin="5" Stroke="Transparent">
+                                <BoxView BackgroundColor="#F59E0B" CornerRadius="20"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnColorSelected" CommandParameter="#F59E0B"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border StrokeShape="RoundRectangle 20" WidthRequest="40" HeightRequest="40" Margin="5" Stroke="Transparent">
+                                <BoxView BackgroundColor="#EF4444" CornerRadius="20"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnColorSelected" CommandParameter="#EF4444"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border StrokeShape="RoundRectangle 20" WidthRequest="40" HeightRequest="40" Margin="5" Stroke="Transparent">
+                                <BoxView BackgroundColor="#EC4899" CornerRadius="20"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnColorSelected" CommandParameter="#EC4899"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </FlexLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Notifications Section -->
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="NOTIFICATIONS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+
+                    <Border Style="{StaticResource Border}" Padding="20">
+                        <VerticalStackLayout Spacing="20">
+                            <!-- Push Notifications -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                <Label Text="+" FontSize="24" VerticalOptions="Center" TextColor="{StaticResource Primary}"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Push Notifications" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Receive alerts for events and polls" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="PushNotificationsSwitch" Grid.Column="2" IsToggled="True" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" Toggled="OnNotificationSettingChanged"/>
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="{StaticResource GlassBorderBrush}" Opacity="0.5"/>
+
+                            <!-- Email Notifications -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                <Label Text="+" FontSize="24" VerticalOptions="Center" TextColor="{StaticResource Primary}"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Email Notifications" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Receive updates via email" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="EmailNotificationsSwitch" Grid.Column="2" IsToggled="True" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" Toggled="OnNotificationSettingChanged"/>
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="{StaticResource GlassBorderBrush}" Opacity="0.5"/>
+
+                            <!-- Event Reminders -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                <Label Text="+" FontSize="24" VerticalOptions="Center" TextColor="{StaticResource Primary}"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Event Reminders" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Get reminded before events start" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="EventRemindersSwitch" Grid.Column="2" IsToggled="True" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" Toggled="OnNotificationSettingChanged"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Privacy Section -->
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="PRIVACY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+
+                    <Border Style="{StaticResource Border}" Padding="20">
+                        <VerticalStackLayout Spacing="20">
+                            <!-- Show Profile -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                <Label Text="+" FontSize="24" VerticalOptions="Center" TextColor="{StaticResource Primary}"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Public Profile" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Allow others to see your profile" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="PublicProfileSwitch" Grid.Column="2" IsToggled="True" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" Toggled="OnPrivacySettingChanged"/>
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="{StaticResource GlassBorderBrush}" Opacity="0.5"/>
+
+                            <!-- Show Voting History -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                <Label Text="+" FontSize="24" VerticalOptions="Center" TextColor="{StaticResource Primary}"/>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Show Voting Activity" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Display your poll participation" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="ShowVotingActivitySwitch" Grid.Column="2" IsToggled="False" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" Toggled="OnPrivacySettingChanged"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Data & Storage Section -->
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="DATA &amp; STORAGE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+
+                    <Border Style="{StaticResource Border}" Padding="15">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                            <Label Text="+" FontSize="24" VerticalOptions="Center" TextColor="{StaticResource Primary}"/>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="Clear Cache" FontSize="15" TextColor="{StaticResource White}"/>
+                                <Label x:Name="CacheSizeLabel" Text="0 MB used" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="+" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" FontSize="20"/>
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnClearCacheTapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- About Section -->
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="ABOUT" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+
+                    <Border Style="{StaticResource Border}" Padding="20">
+                        <VerticalStackLayout Spacing="15">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Version" FontSize="15" TextColor="{StaticResource White}"/>
+                                <Label Grid.Column="1" x:Name="VersionLabel" Text="1.0.0" FontSize="15" TextColor="{StaticResource TextSecondary}"/>
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="{StaticResource GlassBorderBrush}" Opacity="0.5"/>
+
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Terms of Service" FontSize="15" TextColor="{StaticResource White}"/>
+                                <Label Grid.Column="1" Text="+" TextColor="{StaticResource TextSecondary}" FontSize="20"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnTermsTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="{StaticResource GlassBorderBrush}" Opacity="0.5"/>
+
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Privacy Policy" FontSize="15" TextColor="{StaticResource White}"/>
+                                <Label Grid.Column="1" Text="+" TextColor="{StaticResource TextSecondary}" FontSize="20"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnPrivacyPolicyTapped"/>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Footer Spacing -->
+                <BoxView HeightRequest="30" Color="Transparent"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -23,8 +23,12 @@ namespace OnlineVoting_and_Ticketing_app
             Routing.RegisterRoute("ticketdetails", typeof(TicketDetailsPage));
 
             // Poll Routes
-            Routing.RegisterRoute("polldetails", typeof(PollsPage));
+            Routing.RegisterRoute("polldetails", typeof(PollDetailsPage));
             Routing.RegisterRoute("createpoll", typeof(CreatePollPage));
+
+            // Profile Routes
+            Routing.RegisterRoute("editprofile", typeof(OnlineVoting_and_Ticketing_app.Views.Profile.EditProfilePage));
+            Routing.RegisterRoute("settings", typeof(OnlineVoting_and_Ticketing_app.Views.Profile.SettingsPage));
         }
     }
 }

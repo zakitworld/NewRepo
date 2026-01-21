@@ -44,14 +44,14 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
 
                 if (_currentPoll == null)
                 {
-                    await DisplayAlert("Error", "Poll not found", "OK");
+                    await DisplayAlertAsync("Error", "Poll not found", "OK");
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
 
                 DisplayPollDetails();
 
-                var userId = Preferences.Get(AppConstants.Preferences.UserId, string.Empty);
+                var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
                 if (!string.IsNullOrEmpty(userId))
                 {
                     _hasVoted = await _pollService.HasUserVotedAsync(_pollId, userId);
@@ -125,21 +125,25 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
 
         private void UpdateStatusBadge(PollStatus status)
         {
-            StatusLabel.Text = status.ToString();
+            StatusLabel.Text = status.ToString().ToUpper();
 
             switch (status)
             {
                 case PollStatus.Active:
-                    StatusBorder.BackgroundColor = Color.FromArgb("#10B981");
+                    StatusBorder.BackgroundColor = Color.FromArgb("#2010B981");
+                    StatusLabel.TextColor = Color.FromArgb("#10B981");
                     break;
                 case PollStatus.Closed:
-                    StatusBorder.BackgroundColor = Color.FromArgb("#6B7280");
+                    StatusBorder.BackgroundColor = Color.FromArgb("#206B7280");
+                    StatusLabel.TextColor = Color.FromArgb("#9CA3AF");
                     break;
                 case PollStatus.Draft:
-                    StatusBorder.BackgroundColor = Color.FromArgb("#F59E0B");
+                    StatusBorder.BackgroundColor = Color.FromArgb("#20F59E0B");
+                    StatusLabel.TextColor = Color.FromArgb("#FBBF24");
                     break;
                 case PollStatus.Archived:
-                    StatusBorder.BackgroundColor = Color.FromArgb("#9CA3AF");
+                    StatusBorder.BackgroundColor = Color.FromArgb("#209CA3AF");
+                    StatusLabel.TextColor = Color.FromArgb("#D1D5DB");
                     break;
             }
         }
@@ -173,7 +177,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
 
             if (_currentPoll?.Options == null) return;
 
-            ResultsVoteCountLabel.Text = $"{_currentPoll.TotalVotes} {(_currentPoll.TotalVotes == 1 ? "vote" : "votes")}";
+            ResultsVoteCountLabel.Text = $"{_currentPoll.TotalVotes} {(_currentPoll.TotalVotes == 1 ? "voter" : "voters")}";
 
             var totalVotes = _currentPoll.TotalVotes > 0 ? _currentPoll.TotalVotes : 1; // Prevent division by zero
 
@@ -217,16 +221,16 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
                 return;
             }
 
-            var userId = Preferences.Get(AppConstants.Preferences.UserId, string.Empty);
+            var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
             if (string.IsNullOrEmpty(userId))
             {
-                await DisplayAlert("Authentication Required", "Please login to vote", "OK");
+                await DisplayAlertAsync("Authentication Required", "Please login to vote", "OK");
                 await Shell.Current.GoToAsync("//login");
                 return;
             }
 
             SubmitVoteButton.IsEnabled = false;
-            SubmitVoteButton.Text = "Submitting...";
+            SubmitVoteButton.Text = "Recording your voice...";
 
             try
             {
@@ -289,14 +293,10 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
             _isMultipleChoice = isMultipleChoice;
 
             StrokeShape = new RoundRectangle { CornerRadius = 12 };
-            Stroke = Application.Current?.RequestedTheme == AppTheme.Dark
-                ? Color.FromArgb("#374151")
-                : Color.FromArgb("#E5E7EB");
+            Stroke = Color.FromArgb("#30FFFFFF"); // Glass border
             StrokeThickness = 1;
-            BackgroundColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                ? Color.FromArgb("#1F2937")
-                : Colors.White;
-            Padding = 15;
+            BackgroundColor = Color.FromArgb("#10FFFFFF"); // Glass background
+            Padding = 18;
 
             var grid = new Grid
             {
@@ -305,14 +305,14 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
                     new ColumnDefinition { Width = GridLength.Auto },
                     new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
                 },
-                ColumnSpacing = 12
+                ColumnSpacing = 15
             };
 
             if (isMultipleChoice)
             {
                 _checkBox = new CheckBox
                 {
-                    Color = Color.FromArgb("#6366F1"),
+                    Color = Color.FromArgb("#8B5CF6"), // Primary color
                     VerticalOptions = LayoutOptions.Center
                 };
                 grid.Add(_checkBox, 0);
@@ -331,29 +331,19 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
             {
                 Text = option.Text,
                 FontSize = 15,
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Colors.White
-                    : Color.FromArgb("#111827"),
+                TextColor = Colors.White,
                 VerticalOptions = LayoutOptions.Center,
                 LineBreakMode = LineBreakMode.WordWrap
             };
 
             grid.Add(label, 1);
-
             Content = grid;
 
-            // Make entire border tappable
             var tapGesture = new TapGestureRecognizer();
             tapGesture.Tapped += (s, e) =>
             {
-                if (_isMultipleChoice && _checkBox != null)
-                {
-                    _checkBox.IsChecked = !_checkBox.IsChecked;
-                }
-                else if (_radioButton != null)
-                {
-                    _radioButton.IsChecked = true;
-                }
+                if (_isMultipleChoice && _checkBox != null) _checkBox.IsChecked = !_checkBox.IsChecked;
+                else if (_radioButton != null) _radioButton.IsChecked = true;
             };
             GestureRecognizers.Add(tapGesture);
         }
@@ -364,19 +354,14 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
     {
         public PollResultView(string optionText, int voteCount, double percentage)
         {
-            StrokeShape = new RoundRectangle { CornerRadius = 10 };
-            Stroke = Application.Current?.RequestedTheme == AppTheme.Dark
-                ? Color.FromArgb("#374151")
-                : Color.FromArgb("#E5E7EB");
+            StrokeShape = new RoundRectangle { CornerRadius = 12 };
+            Stroke = Color.FromArgb("#20FFFFFF");
             StrokeThickness = 1;
-            BackgroundColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                ? Color.FromArgb("#1F2937")
-                : Colors.White;
-            Padding = 15;
+            BackgroundColor = Color.FromArgb("#08FFFFFF");
+            Padding = 20;
 
-            var layout = new VerticalStackLayout { Spacing = 10 };
+            var layout = new VerticalStackLayout { Spacing = 12 };
 
-            // Header with option text and percentage
             var header = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitionCollection
@@ -386,78 +371,58 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
                 }
             };
 
-            var optionLabel = new Label
+            header.Add(new Label
             {
                 Text = optionText,
                 FontSize = 15,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Colors.White
-                    : Color.FromArgb("#111827"),
+                TextColor = Colors.White,
                 LineBreakMode = LineBreakMode.WordWrap
-            };
+            }, 0);
 
-            var percentageLabel = new Label
+            header.Add(new Label
             {
                 Text = $"{percentage:F1}%",
                 FontSize = 16,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromArgb("#6366F1"),
+                TextColor = Color.FromArgb("#3B82F6"), // Secondary/Blue
                 VerticalOptions = LayoutOptions.Center
-            };
+            }, 1);
 
-            header.Add(optionLabel, 0);
-            header.Add(percentageLabel, 1);
             layout.Children.Add(header);
 
-            // Progress bar background
-            var progressBackground = new Border
+            var progressGrid = new Grid { HeightRequest = 6 };
+            progressGrid.Children.Add(new Border
             {
-                StrokeShape = new RoundRectangle { CornerRadius = 4 },
+                StrokeShape = new RoundRectangle { CornerRadius = 3 },
                 StrokeThickness = 0,
-                BackgroundColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Color.FromArgb("#374151")
-                    : Color.FromArgb("#E5E7EB"),
-                HeightRequest = 8
-            };
+                BackgroundColor = Color.FromArgb("#1AFFFFFF"),
+                HorizontalOptions = LayoutOptions.Fill
+            });
 
-            // Progress bar fill
             var progressFill = new Border
             {
-                StrokeShape = new RoundRectangle { CornerRadius = 4 },
+                StrokeShape = new RoundRectangle { CornerRadius = 3 },
                 StrokeThickness = 0,
-                BackgroundColor = Color.FromArgb("#6366F1"),
-                HeightRequest = 8,
+                BackgroundColor = Color.FromArgb("#8B5CF6"), // Primary
                 HorizontalOptions = LayoutOptions.Start,
-                WidthRequest = Math.Max(0, percentage) // Use percentage for width
+                WidthRequest = 0
             };
-
-            // Create a grid to overlay the progress bar
-            var progressGrid = new Grid();
-            progressGrid.Children.Add(progressBackground);
             progressGrid.Children.Add(progressFill);
 
             layout.Children.Add(progressGrid);
 
-            // Vote count
-            var voteCountLabel = new Label
+            layout.Children.Add(new Label
             {
-                Text = $"{voteCount} {(voteCount == 1 ? "vote" : "votes")}",
-                FontSize = 13,
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Color.FromArgb("#9CA3AF")
-                    : Color.FromArgb("#6B7280")
-            };
-
-            layout.Children.Add(voteCountLabel);
+                Text = $"{voteCount} {(voteCount == 1 ? "participation" : "participations")}",
+                FontSize = 12,
+                TextColor = Color.FromArgb("#94A3B8") // TextSecondary
+            });
 
             Content = layout;
 
-            // Animate the progress bar
-            progressFill.WidthRequest = 0;
-            progressFill.Animate("ProgressAnimation",
-                new Animation(v => progressFill.WidthRequest = v, 0, percentage * 2), // Multiply by factor for visual width
-                16, 500, Easing.CubicOut);
+            // Animate progress
+            progressFill.Animate("ProgressAnim", new Animation(v => progressFill.WidthRequest = v, 0, percentage * 2.5), 16, 800, Easing.CubicOut);
         }
     }
 }

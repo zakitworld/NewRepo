@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageReference Include="xunit" Version="2.9.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+  </ItemGroup>
+
+  <!-- Copy source files directly instead of project reference to avoid MAUI dependency issues -->
+  <ItemGroup>
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Models\*.cs" Link="Models\%(Filename)%(Extension)" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Data\AppDbContext.cs" Link="Data\AppDbContext.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Services\IEventService.cs" Link="Services\IEventService.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Services\IPollService.cs" Link="Services\IPollService.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Services\ITicketService.cs" Link="Services\ITicketService.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Services\SqliteEventService.cs" Link="Services\SqliteEventService.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Services\SqlitePollService.cs" Link="Services\SqlitePollService.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Services\SqliteTicketService.cs" Link="Services\SqliteTicketService.cs" />
+  </ItemGroup>
+
+</Project>

@@ -16,13 +16,13 @@ namespace OnlineVoting_and_Ticketing_app.Views.Profile
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            LoadProfileData();
+            _ = LoadProfileData();
         }
 
-        private void LoadProfileData()
+        private async Task LoadProfileData()
         {
-            var userName = Preferences.Get(AppConstants.Preferences.UserName, "Guest User");
-            var userEmail = Preferences.Get(AppConstants.Preferences.UserEmail, "guest@eventhub.com");
+            var userName = await SecureStorage.GetAsync(AppConstants.Preferences.UserName) ?? "Guest User";
+            var userEmail = await SecureStorage.GetAsync(AppConstants.Preferences.UserEmail) ?? "guest@eventhub.com";
 
             UserNameLabel.Text = userName;
             UserEmailLabel.Text = userEmail;
@@ -34,7 +34,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Profile
 
         private async void OnEditProfileTapped(object? sender, EventArgs e)
         {
-            await DisplayAlert("Edit Profile", "Profile editing feature coming soon!", "OK");
+            await Shell.Current.GoToAsync("editprofile");
         }
 
         private async void OnMyTicketsTapped(object? sender, EventArgs e)
@@ -49,12 +49,12 @@ namespace OnlineVoting_and_Ticketing_app.Views.Profile
 
         private async void OnSettingsTapped(object? sender, EventArgs e)
         {
-            await DisplayAlert("Settings", "Settings feature coming soon!", "OK");
+            await Shell.Current.GoToAsync("settings");
         }
 
         private async void OnLogoutClicked(object? sender, EventArgs e)
         {
-            var confirm = await DisplayAlert("Logout", "Are you sure you want to logout?", "Yes", "No");
+            var confirm = await DisplayAlertAsync("Logout", "Are you sure you want to logout?", "Yes", "No");
 
             if (!confirm)
                 return;
@@ -63,12 +63,12 @@ namespace OnlineVoting_and_Ticketing_app.Views.Profile
 
             if (success)
             {
-                await DisplayAlert("Success", AppConstants.Messages.LogoutSuccess, "OK");
+                await DisplayAlertAsync("Success", AppConstants.Messages.LogoutSuccess, "OK");
                 await Shell.Current.GoToAsync("//login");
             }
             else
             {
-                await DisplayAlert("Error", "Failed to logout. Please try again.", "OK");
+                await DisplayAlertAsync("Error", "Failed to logout. Please try again.", "OK");
             }
         }
     }

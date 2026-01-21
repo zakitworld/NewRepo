@@ -9,6 +9,7 @@ namespace OnlineVoting_and_Ticketing_app
         public App()
         {
             InitializeComponent();
+            Helpers.GlobalExceptionHandler.Initialize();
 
             // Initialize database
             InitializeDatabaseAsync();
@@ -52,9 +53,9 @@ namespace OnlineVoting_and_Ticketing_app
             // Wait a moment for the app to fully initialize
             await Task.Delay(500);
 
-            var isLoggedIn = Preferences.Get(Constants.AppConstants.Preferences.IsLoggedIn, false);
+            var isLoggedIn = await SecureStorage.GetAsync(Constants.AppConstants.Preferences.IsLoggedIn);
 
-            if (!isLoggedIn)
+            if (isLoggedIn != "true")
             {
                 // Navigate to login page
                 await Shell.Current.GoToAsync("//login");

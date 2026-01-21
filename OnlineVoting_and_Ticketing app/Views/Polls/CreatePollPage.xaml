@@ -1,305 +1,137 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OnlineVoting_and_Ticketing_app.Views.Polls.CreatePollPage"
              Title="Create Poll"
-             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+             BackgroundColor="{StaticResource Background}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <Grid RowDefinitions="*">
+        <!-- Background Glow -->
+        <Ellipse WidthRequest="400" HeightRequest="400" 
+                 Fill="{StaticResource Primary}" Opacity="0.03" 
+                 VerticalOptions="Start" HorizontalOptions="Start" Margin="-200,-200,0,0"/>
 
-            <Label
-                Text="Create New Poll"
-                FontSize="28"
-                FontAttributes="Bold"
-                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                Margin="0,10,0,0" />
+        <ScrollView>
+            <VerticalStackLayout Padding="25" Spacing="25">
 
-            <Label
-                Text="Create a poll to gather opinions and votes"
-                FontSize="14"
-                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
-                Margin="0,0,0,10" />
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Create a Poll" Style="{StaticResource Headline}" HorizontalOptions="Start" TextColor="{StaticResource White}"/>
+                    <Label Text="Engage your audience with interactive questions." FontSize="14" TextColor="{StaticResource TextSecondary}"/>
+                </VerticalStackLayout>
 
-            <!-- Poll Title -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="Poll Title *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15,10">
-                    <Entry
-                        x:Name="TitleEntry"
-                        Placeholder="Enter poll question"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}" />
-                </Border>
-            </VerticalStackLayout>
+                <!-- General Info -->
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="POLL DETAILS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                    
+                    <VerticalStackLayout Spacing="8">
+                        <Border Padding="18,5">
+                            <Entry x:Name="TitleEntry" Placeholder="What's on your mind? (e.g. Best Artist 2024)" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15" />
+                        </Border>
+                    </VerticalStackLayout>
 
-            <!-- Poll Description -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="Description"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15,10">
-                    <Editor
-                        x:Name="DescriptionEditor"
-                        Placeholder="Add additional details (optional)"
-                        HeightRequest="100"
-                        AutoSize="TextChanges"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}" />
-                </Border>
-            </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="8">
+                        <Border Padding="18,10">
+                            <Editor x:Name="DescriptionEditor" Placeholder="Add context or instructions for voters..." TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" HeightRequest="100" AutoSize="TextChanges" FontSize="15" BackgroundColor="Transparent"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
 
-            <!-- Start Date & Time -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="Start Date &amp; Time *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <Border
-                        Grid.Column="0"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 10"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                        Padding="15,10">
-                        <DatePicker
-                            x:Name="StartDatePicker"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                            Format="MMM dd, yyyy" />
+                <!-- Schedule -->
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="DURATION" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                    
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Starts" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                            <Border Padding="15,5">
+                                <DatePicker x:Name="StartDatePicker" TextColor="{StaticResource White}" Format="MMM dd" FontSize="14" BackgroundColor="Transparent"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="10" Grid.Column="1">
+                            <Label Text="Ends" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                            <Border Padding="15,5">
+                                <DatePicker x:Name="EndDatePicker" TextColor="{StaticResource White}" Format="MMM dd" FontSize="14" BackgroundColor="Transparent"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                        <Border Padding="15,5">
+                            <TimePicker x:Name="StartTimePicker" TextColor="{StaticResource White}" Format="h:mm tt" FontSize="14" BackgroundColor="Transparent"/>
+                        </Border>
+                        <Border Grid.Column="1" Padding="15,5">
+                            <TimePicker x:Name="EndTimePicker" TextColor="{StaticResource White}" Format="h:mm tt" FontSize="14" BackgroundColor="Transparent"/>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!-- Settings -->
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="CONFIGURATIONS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                    
+                    <Border Padding="15,5">
+                        <Picker x:Name="PollTypePicker" Title="Selection Type" SelectedIndexChanged="OnPollTypeChanged" TextColor="{StaticResource White}" TitleColor="{StaticResource TextSecondary}" FontSize="14" BackgroundColor="Transparent">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>Single Choice</x:String>
+                                    <x:String>Multiple Choice</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
                     </Border>
-                    <Border
-                        Grid.Column="1"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 10"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                        Padding="15,10">
-                        <TimePicker
-                            x:Name="StartTimePicker"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                            Format="h:mm tt" />
+
+                    <!-- Switches Grid -->
+                    <Border Padding="20">
+                        <VerticalStackLayout Spacing="20">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label Text="Multi-selection" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Voters can choose more than one" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="MultipleChoiceSwitch" Grid.Column="1" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" />
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="{StaticResource GlassBorderBrush}" Opacity="0.5"/>
+
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label Text="Anonymous Results" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Hide voter identities" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="AnonymousSwitch" Grid.Column="1" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" />
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="{StaticResource GlassBorderBrush}" Opacity="0.5"/>
+
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label Text="Public Access" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Anyone can vote without account" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="RequireAuthSwitch" Grid.Column="1" IsToggled="True" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" />
+                            </Grid>
+                        </VerticalStackLayout>
                     </Border>
+                </VerticalStackLayout>
+
+                <!-- Poll Options -->
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="RESPONSE OPTIONS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                    
+                    <VerticalStackLayout x:Name="OptionsContainer" Spacing="15" />
+
+                    <Button Text="+ New Option" Clicked="OnAddOptionClicked" BackgroundColor="Transparent" TextColor="{StaticResource Primary}" BorderColor="{StaticResource Primary}" BorderWidth="1" HeightRequest="50" CornerRadius="15"/>
+                </VerticalStackLayout>
+
+                <!-- Error Message -->
+                <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" FontSize="13" IsVisible="False" HorizontalTextAlignment="Center" Margin="0,10" />
+
+                <!-- Action Buttons -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,0,0,30">
+                    <Button Grid.Column="0" Text="Discard" Clicked="OnCancelClicked" BackgroundColor="Transparent" TextColor="{StaticResource TextSecondary}" BorderColor="{StaticResource GlassBorderBrush}" BorderWidth="1" HeightRequest="56" CornerRadius="15" />
+                    <Button Grid.Column="1" x:Name="CreateButton" Text="LAUNCH POLL" Clicked="OnCreatePollClicked" Style="{StaticResource Button}" HeightRequest="56" CornerRadius="15" />
                 </Grid>
+
             </VerticalStackLayout>
-
-            <!-- End Date & Time -->
-            <VerticalStackLayout Spacing="8">
-                <Label
-                    Text="End Date &amp; Time *"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <Border
-                        Grid.Column="0"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 10"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                        Padding="15,10">
-                        <DatePicker
-                            x:Name="EndDatePicker"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                            Format="MMM dd, yyyy" />
-                    </Border>
-                    <Border
-                        Grid.Column="1"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 10"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                        Padding="15,10">
-                        <TimePicker
-                            x:Name="EndTimePicker"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                            Format="h:mm tt" />
-                    </Border>
-                </Grid>
-            </VerticalStackLayout>
-
-            <!-- Poll Settings -->
-            <VerticalStackLayout Spacing="15">
-                <Label
-                    Text="Poll Settings"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-
-                <!-- Poll Type -->
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15,10">
-                    <Picker
-                        x:Name="PollTypePicker"
-                        Title="Poll Type"
-                        SelectedIndexChanged="OnPollTypeChanged"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        TitleColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>Single Choice</x:String>
-                                <x:String>Multiple Choice</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
-                </Border>
-
-                <!-- Allow Multiple Choices Switch -->
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15">
-                    <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
-                        <Label
-                            Text="Allow multiple selections"
-                            FontSize="15"
-                            VerticalOptions="Center"
-                            HorizontalOptions="StartAndExpand"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                        <Switch
-                            x:Name="MultipleChoiceSwitch"
-                            IsToggled="False"
-                            OnColor="{StaticResource Primary}" />
-                    </HorizontalStackLayout>
-                </Border>
-
-                <!-- Anonymous Voting Switch -->
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15">
-                    <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
-                        <Label
-                            Text="Anonymous voting"
-                            FontSize="15"
-                            VerticalOptions="Center"
-                            HorizontalOptions="StartAndExpand"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                        <Switch
-                            x:Name="AnonymousSwitch"
-                            IsToggled="False"
-                            OnColor="{StaticResource Primary}" />
-                    </HorizontalStackLayout>
-                </Border>
-
-                <!-- Require Authentication Switch -->
-                <Border
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                    Padding="15">
-                    <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
-                        <Label
-                            Text="Require authentication"
-                            FontSize="15"
-                            VerticalOptions="Center"
-                            HorizontalOptions="StartAndExpand"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                        <Switch
-                            x:Name="RequireAuthSwitch"
-                            IsToggled="True"
-                            OnColor="{StaticResource Primary}" />
-                    </HorizontalStackLayout>
-                </Border>
-            </VerticalStackLayout>
-
-            <!-- Poll Options -->
-            <VerticalStackLayout Spacing="15">
-                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                    <Label
-                        Text="Poll Options"
-                        FontSize="16"
-                        FontAttributes="Bold"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        VerticalOptions="Center" />
-                    <Border
-                        StrokeShape="RoundRectangle 15"
-                        StrokeThickness="0"
-                        BackgroundColor="{StaticResource Primary}"
-                        Padding="8,4">
-                        <Label
-                            Text="Min 2 Required"
-                            FontSize="10"
-                            TextColor="White"
-                            FontAttributes="Bold" />
-                    </Border>
-                </HorizontalStackLayout>
-
-                <VerticalStackLayout
-                    x:Name="OptionsContainer"
-                    Spacing="15" />
-
-                <Button
-                    Text="+ Add Option"
-                    Clicked="OnAddOptionClicked"
-                    BackgroundColor="Transparent"
-                    TextColor="{StaticResource Primary}"
-                    BorderColor="{StaticResource Primary}"
-                    BorderWidth="2"
-                    CornerRadius="10"
-                    HeightRequest="50" />
-            </VerticalStackLayout>
-
-            <!-- Error Message -->
-            <Label
-                x:Name="ErrorLabel"
-                TextColor="Red"
-                FontSize="14"
-                IsVisible="False"
-                HorizontalTextAlignment="Center"
-                Margin="0,10,0,0" />
-
-            <!-- Action Buttons -->
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,10,0,20">
-                <Button
-                    Grid.Column="0"
-                    Text="Cancel"
-                    Clicked="OnCancelClicked"
-                    BackgroundColor="Transparent"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
-                    BorderColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                    BorderWidth="1"
-                    CornerRadius="10"
-                    HeightRequest="50" />
-
-                <Button
-                    Grid.Column="1"
-                    x:Name="CreateButton"
-                    Text="Create Poll"
-                    Clicked="OnCreatePollClicked"
-                    BackgroundColor="{StaticResource Primary}"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50" />
-            </Grid>
-
-        </VerticalStackLayout>
-    </ScrollView>
-
+        </ScrollView>
+    </Grid>
 </ContentPage>

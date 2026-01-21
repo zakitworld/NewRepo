@@ -39,10 +39,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
 
                 var appUser = MapToUser(user);
 
-                Preferences.Set(AppConstants.Preferences.IsLoggedIn, true);
-                Preferences.Set(AppConstants.Preferences.UserId, user.Id);
-                Preferences.Set(AppConstants.Preferences.UserEmail, user.Email ?? string.Empty);
-                Preferences.Set(AppConstants.Preferences.UserName, user.FullName);
+                await SecureStorage.SetAsync(AppConstants.Preferences.IsLoggedIn, "true");
+                await SecureStorage.SetAsync(AppConstants.Preferences.UserId, user.Id);
+                await SecureStorage.SetAsync(AppConstants.Preferences.UserEmail, user.Email ?? string.Empty);
+                await SecureStorage.SetAsync(AppConstants.Preferences.UserName, user.FullName);
 
                 return (true, null, appUser);
             }
@@ -81,10 +81,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
                 var appUser = MapToUser(user);
 
                 // Store user session
-                Preferences.Set(AppConstants.Preferences.IsLoggedIn, true);
-                Preferences.Set(AppConstants.Preferences.UserId, user.Id);
-                Preferences.Set(AppConstants.Preferences.UserEmail, user.Email ?? string.Empty);
-                Preferences.Set(AppConstants.Preferences.UserName, user.FullName);
+                await SecureStorage.SetAsync(AppConstants.Preferences.IsLoggedIn, "true");
+                await SecureStorage.SetAsync(AppConstants.Preferences.UserId, user.Id);
+                await SecureStorage.SetAsync(AppConstants.Preferences.UserEmail, user.Email ?? string.Empty);
+                await SecureStorage.SetAsync(AppConstants.Preferences.UserName, user.FullName);
 
                 return (true, null, appUser);
             }
@@ -112,26 +112,26 @@ namespace OnlineVoting_and_Ticketing_app.Services
             return Task.FromResult<(bool, string?, User?)>((false, "Facebook login not yet implemented with SQLite", null));
         }
 
-        public Task<bool> LogoutAsync()
+        public async Task<bool> LogoutAsync()
         {
             try
             {
-                Preferences.Remove(AppConstants.Preferences.IsLoggedIn);
-                Preferences.Remove(AppConstants.Preferences.UserId);
-                Preferences.Remove(AppConstants.Preferences.UserEmail);
-                Preferences.Remove(AppConstants.Preferences.UserName);
+                SecureStorage.Remove(AppConstants.Preferences.IsLoggedIn);
+                SecureStorage.Remove(AppConstants.Preferences.UserId);
+                SecureStorage.Remove(AppConstants.Preferences.UserEmail);
+                SecureStorage.Remove(AppConstants.Preferences.UserName);
 
-                return Task.FromResult(true);
+                return await Task.FromResult(true);
             }
             catch
             {
-                return Task.FromResult(false);
+                return await Task.FromResult(false);
             }
         }
 
         public async Task<User?> GetCurrentUserAsync()
         {
-            var userId = Preferences.Get(AppConstants.Preferences.UserId, string.Empty);
+            var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
             if (string.IsNullOrEmpty(userId))
                 return null;
 
@@ -139,10 +139,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
             return user != null ? MapToUser(user) : null;
         }
 
-        public Task<bool> IsUserLoggedInAsync()
+        public async Task<bool> IsUserLoggedInAsync()
         {
-            var isLoggedIn = Preferences.Get(AppConstants.Preferences.IsLoggedIn, false);
-            return Task.FromResult(isLoggedIn);
+            var isLoggedIn = await SecureStorage.GetAsync(AppConstants.Preferences.IsLoggedIn);
+            return isLoggedIn == "true";
         }
 
         public async Task<bool> SendPasswordResetEmailAsync(string email)
@@ -170,6 +170,58 @@ namespace OnlineVoting_and_Ticketing_app.Services
             return await Task.FromResult(true);
         }
 
+        public async Task<(bool Success, string? Error)> UpdateProfileAsync(string fullName, string? phoneNumber, string? profileImageUrl, string? currentPassword, string? newPassword)
+        {
+            try
+            {
+                var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
+                if (string.IsNullOrEmpty(userId))
+                    return (false, "User not logged in");
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                    return (false, "User not found");
+
+                // Update basic profile info
+                user.FullName = fullName;
+                user.PhoneNumber = phoneNumber;
+                user.ProfileImageUrl = profileImageUrl;
+                user.UpdatedAt = DateTime.UtcNow;
+
+                // Handle password change if requested
+                if (!string.IsNullOrEmpty(currentPassword) && !string.IsNullOrEmpty(newPassword))
+                {
+                    var passwordCheck = await _userManager.CheckPasswordAsync(user, currentPassword);
+                    if (!passwordCheck)
+                        return (false, "Current password is incorrect");
+
+                    var passwordResult = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+                    if (!passwordResult.Succeeded)
+                    {
+                        var errors = string.Join(", ", passwordResult.Errors.Select(e => e.Description));
+                        return (false, errors);
+                    }
+                }
+
+                var result = await _userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return (false, errors);
+                }
+
+                // Update local storage
+                await SecureStorage.SetAsync(AppConstants.Preferences.UserName, fullName);
+
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
         private User MapToUser(ApplicationUser appUser)
         {
             return new User
@@ -177,6 +229,7 @@ namespace OnlineVoting_and_Ticketing_app.Services
                 Id = appUser.Id,
                 Email = appUser.Email ?? string.Empty,
                 FullName = appUser.FullName,
+                PhoneNumber = appUser.PhoneNumber ?? string.Empty,
                 ProfileImageUrl = appUser.ProfileImageUrl ?? string.Empty,
                 IsEmailVerified = appUser.EmailConfirmed,
                 CreatedAt = appUser.CreatedAt,

@@ -1,0 +1,117 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineVoting_and_Ticketing_app.Views.Profile.EditProfilePage"
+             Title="Edit Profile"
+             BackgroundColor="{StaticResource Background}">
+
+    <Grid>
+        <!-- Background Glow -->
+        <Ellipse WidthRequest="400" HeightRequest="400" Fill="{StaticResource Primary}" Opacity="0.05"
+                 VerticalOptions="Start" HorizontalOptions="End" Margin="0,-150,-150,0"/>
+
+        <ScrollView>
+            <VerticalStackLayout Padding="25" Spacing="25">
+
+                <!-- Header -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Edit Profile" Style="{StaticResource Headline}" HorizontalOptions="Start" TextColor="{StaticResource White}"/>
+                    <Label Text="Update your personal information" FontSize="14" TextColor="{StaticResource TextSecondary}"/>
+                </VerticalStackLayout>
+
+                <!-- Profile Image Section -->
+                <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
+                    <Border StrokeShape="RoundRectangle 60" StrokeThickness="2" Stroke="{StaticResource Primary}"
+                            WidthRequest="120" HeightRequest="120" BackgroundColor="{StaticResource Surface}">
+                        <Grid>
+                            <Image x:Name="ProfileImagePreview" Aspect="AspectFill" IsVisible="False" />
+                            <Label x:Name="ProfileImagePlaceholder" Text="+" FontSize="60" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{StaticResource TextSecondary}"/>
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSelectImageTapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                    <Label Text="Tap to change photo" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <!-- Form Fields -->
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="PERSONAL INFORMATION" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+
+                    <!-- Full Name -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Full Name" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                        <Border Padding="18,5">
+                            <Entry x:Name="FullNameEntry" Placeholder="Enter your full name" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Email (Read-only) -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Email" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                        <Border Padding="18,5" Opacity="0.6">
+                            <Entry x:Name="EmailEntry" Placeholder="Your email address" TextColor="{StaticResource TextSecondary}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15" IsReadOnly="True" />
+                        </Border>
+                        <Label Text="Email cannot be changed" FontSize="11" TextColor="{StaticResource TextSecondary}" Margin="5,0"/>
+                    </VerticalStackLayout>
+
+                    <!-- Phone Number -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Phone Number (Optional)" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                        <Border Padding="18,5">
+                            <Entry x:Name="PhoneEntry" Placeholder="Enter your phone number" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15" Keyboard="Telephone" />
+                        </Border>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Change Password Section -->
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="CHANGE PASSWORD" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+
+                    <!-- Current Password -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Current Password" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                        <Border Padding="18,5">
+                            <Entry x:Name="CurrentPasswordEntry" Placeholder="Enter current password" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15" IsPassword="True" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- New Password -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="New Password" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                        <Border Padding="18,5">
+                            <Entry x:Name="NewPasswordEntry" Placeholder="Enter new password" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15" IsPassword="True" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Confirm New Password -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Confirm New Password" FontSize="13" TextColor="{StaticResource White}" Margin="5,0"/>
+                        <Border Padding="18,5">
+                            <Entry x:Name="ConfirmPasswordEntry" Placeholder="Confirm new password" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15" IsPassword="True" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Label Text="Leave password fields empty if you don't want to change it" FontSize="11" TextColor="{StaticResource TextSecondary}" HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+
+                <!-- Error Message -->
+                <Label x:Name="ErrorLabel" TextColor="{StaticResource Error}" FontSize="13" IsVisible="False" HorizontalTextAlignment="Center" Margin="0,10" />
+
+                <!-- Success Message -->
+                <Label x:Name="SuccessLabel" TextColor="{StaticResource Success}" FontSize="13" IsVisible="False" HorizontalTextAlignment="Center" Margin="0,10" />
+
+                <!-- Action Buttons -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,10,0,30">
+                    <Button Grid.Column="0" Text="Cancel" Clicked="OnCancelClicked" BackgroundColor="Transparent" TextColor="{StaticResource TextSecondary}" BorderColor="{StaticResource GlassBorderBrush}" BorderWidth="1" HeightRequest="56" CornerRadius="15" />
+                    <Button Grid.Column="1" x:Name="SaveButton" Text="SAVE CHANGES" Clicked="OnSaveClicked" Style="{StaticResource Button}" HeightRequest="56" CornerRadius="15" />
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <Grid x:Name="LoadingOverlay" IsVisible="False" BackgroundColor="#80000000">
+            <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}" VerticalOptions="Center" HorizontalOptions="Center" />
+        </Grid>
+    </Grid>
+</ContentPage>

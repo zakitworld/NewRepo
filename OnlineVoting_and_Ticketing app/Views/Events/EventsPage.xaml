@@ -1,287 +1,142 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              x:Class="OnlineVoting_and_Ticketing_app.Views.Events.EventsPage"
-             Title="Events"
-             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+             Title="Discover Events"
+             BackgroundColor="{StaticResource Background}">
 
     <Grid RowDefinitions="Auto,*">
+        <!-- Background Glow -->
+        <Ellipse Grid.RowSpan="2" WidthRequest="300" HeightRequest="300" 
+                  Fill="{StaticResource Primary}" Opacity="0.03" 
+                  VerticalOptions="Start" HorizontalOptions="End" Margin="0,-100,-100,0"/>
 
-        <!-- Header with Search -->
-        <VerticalStackLayout
-            Grid.Row="0"
-            Padding="20,20,20,10"
-            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
-
-            <Label
-                Text="Discover Events"
-                FontSize="28"
-                FontAttributes="Bold"
-                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-
-            <Border
-                Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 10"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
-                Padding="15,10"
-                Margin="0,15,0,0">
-                <HorizontalStackLayout Spacing="10">
-                    <Label
-                        Text="🔍"
-                        FontSize="18"
-                        VerticalOptions="Center" />
-                    <Entry
-                        x:Name="SearchEntry"
-                        Placeholder="Search events..."
-                        PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                        TextChanged="OnSearchTextChanged"
-                        HorizontalOptions="FillAndExpand" />
-                </HorizontalStackLayout>
+        <!-- Header Section -->
+        <VerticalStackLayout Grid.Row="0" Padding="25" Spacing="20">
+            <Label Text="Explore Events" Style="{StaticResource Headline}" TextColor="{StaticResource White}"/>
+            
+            <!-- Search Bar -->
+            <Border Style="{StaticResource Border}" Padding="15,2" HeightRequest="50">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Label Text="🔍" VerticalOptions="Center" Margin="0,0,10,0" Opacity="0.5"/>
+                    <Entry x:Name="SearchEntry" Grid.Column="1" Placeholder="Search events..." 
+                           PlaceholderColor="{StaticResource TextSecondary}" TextColor="{StaticResource White}"
+                           FontSize="14" VerticalOptions="Center" TextChanged="OnSearchTextChanged"/>
+                </Grid>
             </Border>
 
-            <!-- Category Filter -->
-            <ScrollView Orientation="Horizontal" Margin="0,15,0,0" HorizontalScrollBarVisibility="Never">
+            <!-- Categories -->
+            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
                 <HorizontalStackLayout Spacing="10">
-                    <Border
-                        x:Name="AllCategoryButton"
-                        Stroke="{StaticResource Primary}"
-                        StrokeThickness="2"
-                        StrokeShape="RoundRectangle 20"
-                        BackgroundColor="{StaticResource Primary}"
-                        Padding="20,8">
-                        <Label
-                            Text="All"
-                            TextColor="White"
-                            FontAttributes="Bold" />
+                    <Border x:Name="AllCategoryButton" StrokeThickness="0" StrokeShape="RoundRectangle 25" 
+                            BackgroundColor="{StaticResource Primary}" Padding="20,10">
+                        <Label Text="All" TextColor="White" FontSize="13" FontAttributes="Bold"/>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="All" />
                         </Border.GestureRecognizers>
                     </Border>
-
-                    <Border
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 20"
-                        BackgroundColor="Transparent"
-                        Padding="20,8">
-                        <Label
-                            Text="Music"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                    
+                    <Border Style="{StaticResource Border}" StrokeShape="RoundRectangle 25" Padding="20,10">
+                        <Label Text="Music" TextColor="{StaticResource White}" FontSize="13"/>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="Music" />
                         </Border.GestureRecognizers>
                     </Border>
 
-                    <Border
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 20"
-                        BackgroundColor="Transparent"
-                        Padding="20,8">
-                        <Label
-                            Text="Sports"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                    <Border Style="{StaticResource Border}" StrokeShape="RoundRectangle 25" Padding="20,10">
+                        <Label Text="Sports" TextColor="{StaticResource White}" FontSize="13"/>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="Sports" />
                         </Border.GestureRecognizers>
                     </Border>
 
-                    <Border
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 20"
-                        BackgroundColor="Transparent"
-                        Padding="20,8">
-                        <Label
-                            Text="Conference"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                    <Border Style="{StaticResource Border}" StrokeShape="RoundRectangle 25" Padding="20,10">
+                        <Label Text="Conference" TextColor="{StaticResource White}" FontSize="13"/>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="Conference" />
                         </Border.GestureRecognizers>
                     </Border>
-
-                    <Border
-                        Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 20"
-                        BackgroundColor="Transparent"
-                        Padding="20,8">
-                        <Label
-                            Text="Workshop"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="Workshop" />
-                        </Border.GestureRecognizers>
-                    </Border>
                 </HorizontalStackLayout>
             </ScrollView>
-
         </VerticalStackLayout>
 
-        <!-- Events List -->
-        <RefreshView
-            Grid.Row="1"
-            x:Name="RefreshView"
-            Refreshing="OnRefreshing">
-            <CollectionView
-                x:Name="EventsCollectionView"
-                SelectionMode="Single"
-                SelectionChanged="OnEventSelected"
-                Margin="15,10">
+        <!-- Main Content -->
+        <RefreshView Grid.Row="1" x:Name="RefreshView" Refreshing="OnRefreshing" RefreshColor="{StaticResource Primary}">
+            <CollectionView x:Name="EventsCollectionView" SelectionMode="Single" SelectionChanged="OnEventSelected" Margin="20,0">
                 <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="15" />
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border
-                            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 15"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                            Padding="0">
-                            <Grid RowDefinitions="180,Auto,Auto,Auto" ColumnDefinitions="*">
-
-                                <!-- Event Image -->
-                                <Border
-                                    Grid.Row="0"
-                                    StrokeShape="RoundRectangle 15,15,0,0"
-                                    StrokeThickness="0"
-                                    HeightRequest="180">
-                                    <ffimageloading:CachedImage
-                                        Source="{Binding ImageUrl}"
-                                        Aspect="AspectFill"
-                                        LoadingPlaceholder="placeholder.png"
-                                        ErrorPlaceholder="placeholder.png" />
-                                </Border>
-
-                                <!-- Event Title -->
-                                <Label
-                                    Grid.Row="1"
-                                    Text="{Binding Title}"
-                                    FontSize="18"
-                                    FontAttributes="Bold"
-                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                                    Margin="15,15,15,5"
-                                    LineBreakMode="TailTruncation"
-                                    MaxLines="2" />
-
-                                <!-- Event Details -->
-                                <VerticalStackLayout Grid.Row="2" Spacing="8" Margin="15,0,15,10">
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label
-                                            Text="📅"
-                                            FontSize="14" />
-                                        <Label
-                                            Text="{Binding StartDate, StringFormat='{0:MMM dd, yyyy • h:mm tt}'}"
-                                            FontSize="14"
-                                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
-                                    </HorizontalStackLayout>
-
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label
-                                            Text="📍"
-                                            FontSize="14" />
-                                        <Label
-                                            Text="{Binding Location}"
-                                            FontSize="14"
-                                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
-                                            LineBreakMode="TailTruncation" />
-                                    </HorizontalStackLayout>
-                                </VerticalStackLayout>
-
-                                <!-- Price and Category -->
-                                <Grid Grid.Row="3" ColumnDefinitions="*,Auto" Margin="15,0,15,15">
-                                    <Border
-                                        Grid.Column="0"
-                                        StrokeShape="RoundRectangle 8"
-                                        StrokeThickness="0"
-                                        BackgroundColor="{StaticResource Primary}"
-                                        Padding="12,6"
-                                        HorizontalOptions="Start">
-                                        <Label
-                                            Text="{Binding Category}"
-                                            TextColor="White"
-                                            FontSize="12"
-                                            FontAttributes="Bold" />
+                        <Border Style="{StaticResource Border}" Padding="0">
+                            <Grid RowDefinitions="180,Auto">
+                                <!-- Image with Gradient Overlay -->
+                                <Grid Grid.Row="0">
+                                    <ffimageloading:CachedImage Source="{Binding ImageUrl}" Aspect="AspectFill" />
+                                    <Rectangle Fill="{StaticResource Background}" Opacity="0.2"/>
+                                    <Border HorizontalOptions="End" VerticalOptions="Top" Margin="15" 
+                                            Padding="10,5" StrokeShape="RoundRectangle 8" Background="#CC16161A" StrokeThickness="0">
+                                        <Label Text="{Binding Category, Converter={StaticResource UpperCaseConverter}}" 
+                                               TextColor="{StaticResource Primary}" FontSize="9" FontAttributes="Bold" CharacterSpacing="1"/>
                                     </Border>
-
-                                    <Label
-                                        Grid.Column="1"
-                                        Text="{Binding TicketTypes[0].Price, StringFormat='GH₵ {0:F2}'}"
-                                        FontSize="16"
-                                        FontAttributes="Bold"
-                                        TextColor="{StaticResource Primary}"
-                                        VerticalOptions="Center" />
                                 </Grid>
 
+                                <!-- Details -->
+                                <VerticalStackLayout Grid.Row="1" Padding="20" Spacing="12">
+                                    <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource White}"/>
+                                    
+                                    <HorizontalStackLayout Spacing="20">
+                                        <HorizontalStackLayout Spacing="6">
+                                            <Label Text="📅" FontSize="12" VerticalOptions="Center" Opacity="0.7"/>
+                                            <Label Text="{Binding StartDate, StringFormat='{0:ddd, MMM dd}'}" 
+                                                   TextColor="{StaticResource TextSecondary}" FontSize="12"/>
+                                        </HorizontalStackLayout>
+                                        <HorizontalStackLayout Spacing="6">
+                                            <Label Text="📍" FontSize="12" VerticalOptions="Center" Opacity="0.7"/>
+                                            <Label Text="{Binding Location}" 
+                                                   TextColor="{StaticResource TextSecondary}" FontSize="12" LineBreakMode="TailTruncation"/>
+                                        </HorizontalStackLayout>
+                                    </HorizontalStackLayout>
+
+                                    <Grid ColumnDefinitions="*,Auto" Margin="0,5,0,0">
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="From" FontSize="11" TextColor="{StaticResource TextSecondary}" VerticalOptions="End" Margin="0,0,0,2"/>
+                                            <Label Text="{Binding TicketTypes[0].Price, StringFormat='GH₵ {0:N0}'}" 
+                                                   TextColor="{StaticResource Primary}" FontSize="18" FontAttributes="Bold"/>
+                                        </HorizontalStackLayout>
+                                        <Label Grid.Column="1" Text="View Details →" TextColor="{StaticResource Secondary}" 
+                                               FontSize="12" VerticalOptions="Center" FontAttributes="Bold"/>
+                                    </Grid>
+                                </VerticalStackLayout>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
 
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"
-                        Spacing="15"
-                        Padding="40">
-                        <Label
-                            Text="📅"
-                            FontSize="60"
-                            HorizontalOptions="Center" />
-                        <Label
-                            Text="No events found"
-                            FontSize="18"
-                            FontAttributes="Bold"
-                            HorizontalOptions="Center"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
-                        <Label
-                            Text="Check back later for upcoming events"
-                            FontSize="14"
-                            HorizontalOptions="Center"
-                            HorizontalTextAlignment="Center"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="25" Padding="40" Margin="0,50,0,0">
+                        <Border WidthRequest="100" HeightRequest="100" StrokeShape="RoundRectangle 50" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource GlassBorderBrush}">
+                            <Label Text="✨" FontSize="40" HorizontalOptions="Center" VerticalOptions="Center" Opacity="0.5"/>
+                        </Border>
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                            <Label Text="No Events Found" Style="{StaticResource Headline}" FontSize="20" HorizontalOptions="Center" TextColor="{StaticResource White}"/>
+                            <Label Text="Be the first to create history." FontSize="14" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
             </CollectionView>
         </RefreshView>
 
-        <!-- Loading Indicator -->
-        <ActivityIndicator
-            Grid.Row="1"
-            x:Name="LoadingIndicator"
-            IsRunning="False"
-            IsVisible="False"
-            Color="{StaticResource Primary}"
-            VerticalOptions="Center"
-            HorizontalOptions="Center" />
-
         <!-- Floating Action Button -->
-        <Border
-            Grid.Row="1"
-            StrokeShape="RoundRectangle 30"
-            StrokeThickness="0"
-            BackgroundColor="{StaticResource Primary}"
-            WidthRequest="60"
-            HeightRequest="60"
-            HorizontalOptions="End"
-            VerticalOptions="End"
-            Margin="0,0,20,20"
-            Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.3}">
-            <Label
-                Text="+"
-                FontSize="32"
-                TextColor="White"
-                HorizontalOptions="Center"
-                VerticalOptions="Center" />
+        <Border Grid.Row="1" StrokeShape="RoundRectangle 28" StrokeThickness="0" 
+                BackgroundColor="{StaticResource Primary}" WidthRequest="56" HeightRequest="56" 
+                HorizontalOptions="End" VerticalOptions="End" Margin="25" Shadow="{StaticResource PrimaryShadow}">
+            <Label Text="+" FontSize="30" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnCreateEventTapped" />
             </Border.GestureRecognizers>
         </Border>
 
+        <ActivityIndicator Grid.Row="1" x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Color="{StaticResource Primary}" VerticalOptions="Center" HorizontalOptions="Center"/>
     </Grid>
-
 </ContentPage>

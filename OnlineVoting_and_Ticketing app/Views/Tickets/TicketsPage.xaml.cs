@@ -26,12 +26,12 @@ namespace OnlineVoting_and_Ticketing_app.Views.Tickets
             LoadingIndicator.IsVisible = true;
             LoadingIndicator.IsRunning = true;
 
-            var userId = Preferences.Get(AppConstants.Preferences.UserId, string.Empty);
+            var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
             if (string.IsNullOrEmpty(userId))
             {
                 LoadingIndicator.IsVisible = false;
                 LoadingIndicator.IsRunning = false;
-                await DisplayAlert("Authentication Required", "Please login to view your tickets", "OK");
+                await DisplayAlertAsync("Authentication Required", "Please login to view your tickets", "OK");
                 await Shell.Current.GoToAsync("//login");
                 return;
             }

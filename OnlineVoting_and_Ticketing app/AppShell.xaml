@@ -23,26 +23,31 @@
     <TabBar x:Name="MainTabBar" Route="main">
         <ShellContent
             Title="Home"
+            Icon="🏠"
             ContentTemplate="{DataTemplate local:MainPage}"
             Route="home" />
 
         <ShellContent
             Title="Events"
+            Icon="🎫"
             ContentTemplate="{DataTemplate events:EventsPage}"
             Route="events" />
 
         <ShellContent
             Title="Polls"
+            Icon="📊"
             ContentTemplate="{DataTemplate polls:PollsPage}"
             Route="polls" />
 
         <ShellContent
             Title="Tickets"
+            Icon="🎟️"
             ContentTemplate="{DataTemplate tickets:TicketsPage}"
             Route="tickets" />
 
         <ShellContent
             Title="Profile"
+            Icon="👤"
             ContentTemplate="{DataTemplate profile:ProfilePage}"
             Route="profile" />
     </TabBar>

@@ -9,11 +9,11 @@ namespace OnlineVoting_and_Ticketing_app
             InitializeComponent();
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            var userName = Preferences.Get(AppConstants.Preferences.UserName, "Guest");
+            var userName = await SecureStorage.GetAsync(AppConstants.Preferences.UserName) ?? "Guest";
             WelcomeLabel.Text = $"Welcome, {userName}!";
         }
 

@@ -14,5 +14,6 @@ namespace OnlineVoting_and_Ticketing_app.Services
         Task<bool> IsUserLoggedInAsync();
         Task<bool> SendPasswordResetEmailAsync(string email);
         Task<bool> VerifyEmailAsync(string code);
+        Task<(bool Success, string? Error)> UpdateProfileAsync(string fullName, string? phoneNumber, string? profileImageUrl, string? currentPassword, string? newPassword);
     }
 }

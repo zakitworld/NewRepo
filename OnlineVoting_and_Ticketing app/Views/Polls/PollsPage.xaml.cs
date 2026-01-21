@@ -49,7 +49,15 @@ namespace OnlineVoting_and_Ticketing_app.Views.Polls
 
         private async void OnCreatePollTapped(object? sender, EventArgs e)
         {
-            await Shell.Current.GoToAsync("createpoll");
+            try
+            {
+                await Shell.Current.GoToAsync("createpoll");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Unable to open create poll page: {ex.Message}", "OK");
+                System.Diagnostics.Debug.WriteLine($"Navigation error: {ex}");
+            }
         }
     }
 }

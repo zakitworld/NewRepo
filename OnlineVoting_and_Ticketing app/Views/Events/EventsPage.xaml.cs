@@ -97,7 +97,15 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
         private async void OnCreateEventTapped(object? sender, EventArgs e)
         {
-            await Shell.Current.GoToAsync("createevent");
+            try
+            {
+                await Shell.Current.GoToAsync("createevent");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Unable to open create event page: {ex.Message}", "OK");
+                System.Diagnostics.Debug.WriteLine($"Navigation error: {ex}");
+            }
         }
     }
 }

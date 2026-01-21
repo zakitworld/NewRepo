@@ -14,28 +14,37 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
         public CreateEventPage(IEventService eventService)
         {
             InitializeComponent();
-            _eventService = eventService;
+            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
 
-            // Set minimum and default dates
-            StartDatePicker.MinimumDate = DateTime.Now;
-            EndDatePicker.MinimumDate = DateTime.Now;
-            StartDatePicker.Date = DateTime.Now.AddDays(7);
-            EndDatePicker.Date = DateTime.Now.AddDays(7);
-            StartTimePicker.Time = new TimeSpan(10, 0, 0);
-            EndTimePicker.Time = new TimeSpan(18, 0, 0);
+            try
+            {
+                // Set minimum and default dates
+                StartDatePicker.MinimumDate = DateTime.Now;
+                EndDatePicker.MinimumDate = DateTime.Now;
+                StartDatePicker.Date = DateTime.Now.AddDays(7);
+                EndDatePicker.Date = DateTime.Now.AddDays(7);
+                StartTimePicker.Time = new TimeSpan(10, 0, 0);
+                EndTimePicker.Time = new TimeSpan(18, 0, 0);
 
-            // Add first ticket type by default
-            AddTicketTypeView();
+                // Add first ticket type by default
+                AddTicketTypeView();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"CreateEventPage initialization error: {ex.Message}");
+            }
         }
 
         private async void OnSelectImageTapped(object? sender, EventArgs e)
         {
             try
             {
-                var result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
+                var results = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
                 {
                     Title = "Select Event Image"
                 });
+
+                var result = results?.FirstOrDefault();
 
                 if (result != null)
                 {
@@ -48,7 +57,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Failed to select image: {ex.Message}", "OK");
+                await DisplayAlertAsync("Error", $"Failed to select image: {ex.Message}", "OK");
             }
         }
 
@@ -81,7 +90,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
             TicketTypesContainer.Children.Add(ticketTypeView);
         }
 
-        private void RemoveTicketTypeView(TicketTypeView? view)
+        private async void RemoveTicketTypeView(TicketTypeView? view)
         {
             if (view != null && _ticketTypeViews.Count > 1)
             {
@@ -90,7 +99,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
             }
             else if (_ticketTypeViews.Count == 1)
             {
-                DisplayAlert("Error", "At least one ticket type is required", "OK");
+                await DisplayAlertAsync("Error", "At least one ticket type is required", "OK");
             }
         }
 
@@ -163,8 +172,8 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
             try
             {
-                var userId = Preferences.Get(AppConstants.Preferences.UserId, string.Empty);
-                var userName = Preferences.Get(AppConstants.Preferences.UserName, "Organizer");
+                var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
+                var userName = await SecureStorage.GetAsync(AppConstants.Preferences.UserName) ?? "Organizer";
 
                 var newEvent = new Event
                 {
@@ -172,7 +181,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
                     Description = DescriptionEditor.Text.Trim(),
                     Location = LocationEntry.Text.Trim(),
                     ImageUrl = _selectedImageUrl,
-                    OrganizerId = userId,
+                    OrganizerId = userId ?? string.Empty,
                     OrganizerName = userName,
                     StartDate = startDateTime ?? DateTime.UtcNow,
                     EndDate = endDateTime ?? DateTime.UtcNow.AddDays(1),
@@ -193,7 +202,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
                 if (success && !string.IsNullOrEmpty(eventId))
                 {
-                    await DisplayAlert("Success", AppConstants.Messages.EventCreatedSuccess, "OK");
+                    await DisplayAlertAsync("Success", AppConstants.Messages.EventCreatedSuccess, "OK");
                     await Shell.Current.GoToAsync("//events");
                 }
                 else
@@ -214,7 +223,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
         private async void OnCancelClicked(object? sender, EventArgs e)
         {
-            var confirm = await DisplayAlert("Cancel", "Are you sure you want to cancel? All changes will be lost.", "Yes", "No");
+            var confirm = await DisplayAlertAsync("Cancel", "Are you sure you want to cancel? All changes will be lost.", "Yes", "No");
             if (confirm)
             {
                 await Shell.Current.GoToAsync("..");
@@ -240,17 +249,13 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
         public TicketTypeView()
         {
-            StrokeShape = new RoundRectangle { CornerRadius = 12 };
-            Stroke = Application.Current?.RequestedTheme == AppTheme.Dark
-                ? Color.FromArgb("#374151")
-                : Color.FromArgb("#E5E7EB");
+            StrokeShape = new RoundRectangle { CornerRadius = 15 };
+            Stroke = (Color)(Application.Current?.Resources["GlassBorderBrush"] ?? Colors.Transparent);
             StrokeThickness = 1;
-            BackgroundColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                ? Color.FromArgb("#1F2937")
-                : Colors.White;
-            Padding = 15;
+            BackgroundColor = (Color)(Application.Current?.Resources["GlassBrush"] ?? Colors.Transparent);
+            Padding = 20;
 
-            var layout = new VerticalStackLayout { Spacing = 12 };
+            var layout = new VerticalStackLayout { Spacing = 15 };
 
             // Header with remove button
             var header = new Grid
@@ -264,20 +269,21 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
             var headerLabel = new Label
             {
-                Text = "Ticket Type",
-                FontSize = 14,
+                Text = "TICKET TIER",
+                FontSize = 10,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Colors.White
-                    : Color.FromArgb("#111827")
+                CharacterSpacing = 1,
+                TextColor = (Color)(Application.Current?.Resources["TextSecondary"] ?? Colors.Gray)
             };
 
             var removeButton = new Label
             {
-                Text = "✕",
-                FontSize = 18,
-                TextColor = Color.FromArgb("#EF4444"),
-                VerticalOptions = LayoutOptions.Center
+                Text = "Remove",
+                FontSize = 11,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = (Color)(Application.Current?.Resources["Error"] ?? Colors.Red),
+                VerticalOptions = LayoutOptions.Center,
+                Margin = new Thickness(0, 0, 5, 0)
             };
 
             var tapGesture = new TapGestureRecognizer();
@@ -289,28 +295,31 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
             layout.Children.Add(header);
 
             // Name
+            var nameBorder = new Border { Padding = new Thickness(15, 2), HeightRequest = 48 };
             _nameEntry = new Entry
             {
-                Placeholder = "Ticket name (e.g., VIP, General)",
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Colors.White
-                    : Color.FromArgb("#111827"),
-                PlaceholderColor = Color.FromArgb("#9CA3AF")
+                Placeholder = "Tier Name (e.g. VIP)",
+                TextColor = Colors.White,
+                PlaceholderColor = (Color)(Application.Current?.Resources["TextSecondary"] ?? Colors.Gray),
+                FontSize = 14
             };
-            layout.Children.Add(_nameEntry);
+            nameBorder.Content = _nameEntry;
+            layout.Children.Add(nameBorder);
 
             // Description
+            var descBorder = new Border { Padding = new Thickness(15, 8) };
             _descriptionEditor = new Editor
             {
-                Placeholder = "Description (optional)",
-                HeightRequest = 60,
+                Placeholder = "Optionally describe what this tier includes...",
+                HeightRequest = 70,
                 AutoSize = EditorAutoSizeOption.TextChanges,
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Colors.White
-                    : Color.FromArgb("#111827"),
-                PlaceholderColor = Color.FromArgb("#9CA3AF")
+                TextColor = Colors.White,
+                PlaceholderColor = (Color)(Application.Current?.Resources["TextSecondary"] ?? Colors.Gray),
+                FontSize = 14,
+                BackgroundColor = Colors.Transparent
             };
-            layout.Children.Add(_descriptionEditor);
+            descBorder.Content = _descriptionEditor;
+            layout.Children.Add(descBorder);
 
             // Price and Quantity
             var priceQuantityGrid = new Grid
@@ -320,31 +329,33 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
                     new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                     new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
                 },
-                ColumnSpacing = 10
+                ColumnSpacing = 15
             };
 
+            var priceBorder = new Border { Padding = new Thickness(15, 2), HeightRequest = 48 };
             _priceEntry = new Entry
             {
                 Placeholder = "Price (GH₵)",
                 Keyboard = Keyboard.Numeric,
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Colors.White
-                    : Color.FromArgb("#111827"),
-                PlaceholderColor = Color.FromArgb("#9CA3AF")
+                TextColor = Colors.White,
+                PlaceholderColor = (Color)(Application.Current?.Resources["TextSecondary"] ?? Colors.Gray),
+                FontSize = 14
             };
+            priceBorder.Content = _priceEntry;
 
+            var qtyBorder = new Border { Padding = new Thickness(15, 2), HeightRequest = 48 };
             _quantityEntry = new Entry
             {
                 Placeholder = "Quantity",
                 Keyboard = Keyboard.Numeric,
-                TextColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                    ? Colors.White
-                    : Color.FromArgb("#111827"),
-                PlaceholderColor = Color.FromArgb("#9CA3AF")
+                TextColor = Colors.White,
+                PlaceholderColor = (Color)(Application.Current?.Resources["TextSecondary"] ?? Colors.Gray),
+                FontSize = 14
             };
+            qtyBorder.Content = _quantityEntry;
 
-            priceQuantityGrid.Add(_priceEntry, 0);
-            priceQuantityGrid.Add(_quantityEntry, 1);
+            priceQuantityGrid.Add(priceBorder, 0);
+            priceQuantityGrid.Add(qtyBorder, 1);
             layout.Children.Add(priceQuantityGrid);
 
             Content = layout;

@@ -41,7 +41,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
             if (_currentEvent == null)
             {
-                await DisplayAlert("Error", "Event not found", "OK");
+                await DisplayAlertAsync("Error", "Event not found", "OK");
                 await Shell.Current.GoToAsync("..");
                 return;
             }
@@ -72,15 +72,15 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
             if (ticketType == null)
                 return;
 
-            var userId = Preferences.Get(AppConstants.Preferences.UserId, string.Empty);
+            var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
             if (string.IsNullOrEmpty(userId))
             {
-                await DisplayAlert("Authentication Required", "Please login to purchase tickets", "OK");
+                await DisplayAlertAsync("Authentication Required", "Please login to purchase tickets", "OK");
                 await Shell.Current.GoToAsync("//login");
                 return;
             }
 
-            var confirm = await DisplayAlert(
+            var confirm = await DisplayAlertAsync(
                 "Confirm Purchase",
                 $"Purchase {ticketType.Name} for GH₵ {ticketType.Price:F2}?",
                 "Confirm",
@@ -95,16 +95,16 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
             try
             {
                 var reference = await _paymentService.GeneratePaymentReferenceAsync();
-                var email = Preferences.Get(AppConstants.Preferences.UserEmail, string.Empty);
+                var email = await SecureStorage.GetAsync(AppConstants.Preferences.UserEmail);
 
                 var (paymentSuccess, paymentError, transactionId) = await _paymentService.InitiatePaymentAsync(
                     ticketType.Price,
-                    email,
+                    email ?? string.Empty,
                     reference);
 
                 if (!paymentSuccess || string.IsNullOrEmpty(transactionId))
                 {
-                    await DisplayAlert("Payment Failed", paymentError ?? "Unable to process payment", "OK");
+                    await DisplayAlertAsync("Payment Failed", paymentError ?? "Unable to process payment", "OK");
                     return;
                 }
 
@@ -114,7 +114,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
                 if (!verifySuccess)
                 {
-                    await DisplayAlert("Payment Verification Failed", verifyError ?? "Unable to verify payment", "OK");
+                    await DisplayAlertAsync("Payment Verification Failed", verifyError ?? "Unable to verify payment", "OK");
                     return;
                 }
 
@@ -125,17 +125,17 @@ namespace OnlineVoting_and_Ticketing_app.Views.Events
 
                 if (ticketSuccess && ticket != null)
                 {
-                    await DisplayAlert("Success", AppConstants.Messages.TicketPurchasedSuccess, "OK");
+                    await DisplayAlertAsync("Success", AppConstants.Messages.TicketPurchasedSuccess, "OK");
                     await Shell.Current.GoToAsync($"//tickets");
                 }
                 else
                 {
-                    await DisplayAlert("Error", ticketError ?? "Failed to purchase ticket", "OK");
+                    await DisplayAlertAsync("Error", ticketError ?? "Failed to purchase ticket", "OK");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+                await DisplayAlertAsync("Error", $"An error occurred: {ex.Message}", "OK");
             }
             finally
             {

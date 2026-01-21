@@ -45,7 +45,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Auth
 
             if (success && user != null)
             {
-                await DisplayAlert("Success", AppConstants.Messages.RegistrationSuccess, "OK");
+                await DisplayAlertAsync("Success", AppConstants.Messages.RegistrationSuccess, "OK");
                 await Shell.Current.GoToAsync($"//{AppConstants.Routes.Home}");
             }
             else
@@ -67,7 +67,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Auth
 
             if (success && user != null)
             {
-                await DisplayAlert("Success", AppConstants.Messages.RegistrationSuccess, "OK");
+                await DisplayAlertAsync("Success", AppConstants.Messages.RegistrationSuccess, "OK");
                 await Shell.Current.GoToAsync($"//{AppConstants.Routes.Home}");
             }
             else
@@ -88,7 +88,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Auth
 
             if (success && user != null)
             {
-                await DisplayAlert("Success", AppConstants.Messages.RegistrationSuccess, "OK");
+                await DisplayAlertAsync("Success", AppConstants.Messages.RegistrationSuccess, "OK");
                 await Shell.Current.GoToAsync($"//{AppConstants.Routes.Home}");
             }
             else

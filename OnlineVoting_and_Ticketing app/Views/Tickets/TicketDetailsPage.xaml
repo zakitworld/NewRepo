@@ -1,210 +1,94 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OnlineVoting_and_Ticketing_app.Views.Tickets.TicketDetailsPage"
              Title="Ticket Details"
-             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
+             BackgroundColor="{StaticResource Background}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+        <VerticalStackLayout Padding="25" Spacing="30">
 
-            <!-- Ticket Card -->
-            <Border
-                Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 20"
-                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                Padding="0">
+            <!-- Cinematic Header -->
+            <VerticalStackLayout Spacing="10" Margin="0,10,0,0">
+                <Label x:Name="EventTitleLabel" Text="Event Title" Style="{StaticResource Headline}" HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="{StaticResource White}"/>
+                <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                    <Label Text="🎫" FontSize="14" VerticalOptions="Center"/>
+                    <Label x:Name="TicketTypeLabel" Text="General Admission" FontSize="14" TextColor="{StaticResource Primary}" FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
 
-                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-
-                    <!-- Header -->
-                    <Border
-                        Grid.Row="0"
-                        StrokeShape="RoundRectangle 20,20,0,0"
-                        StrokeThickness="0"
-                        BackgroundColor="{StaticResource Primary}"
-                        Padding="20">
-                        <VerticalStackLayout Spacing="5">
-                            <Label
-                                x:Name="EventTitleLabel"
-                                FontSize="22"
-                                FontAttributes="Bold"
-                                TextColor="White"
-                                HorizontalOptions="Center"
-                                HorizontalTextAlignment="Center" />
-                            <Label
-                                x:Name="TicketTypeLabel"
-                                FontSize="14"
-                                TextColor="White"
-                                Opacity="0.9"
-                                HorizontalOptions="Center" />
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <!-- QR Code -->
-                    <Border
-                        Grid.Row="1"
-                        StrokeThickness="0"
-                        Padding="20"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
-                        <VerticalStackLayout Spacing="15">
-                            <Border
-                                StrokeShape="RoundRectangle 15"
-                                StrokeThickness="2"
-                                Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
-                                Padding="20"
-                                HorizontalOptions="Center"
-                                BackgroundColor="White">
-                                <Image
-                                    x:Name="QRCodeImage"
-                                    WidthRequest="200"
-                                    HeightRequest="200"
-                                    Aspect="AspectFit" />
+            <!-- Major Ticket Glass Container -->
+            <Border Style="{StaticResource Border}" Padding="0" Margin="0,10">
+                <VerticalStackLayout>
+                    <!-- QR Section -->
+                    <Border BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="30" StrokeShape="RoundRectangle 20,20,0,0">
+                        <VerticalStackLayout Spacing="20">
+                            <Border StrokeShape="RoundRectangle 20" StrokeThickness="4" Stroke="{StaticResource Background}" 
+                                    Padding="25" HorizontalOptions="Center" BackgroundColor="White" WidthRequest="250" HeightRequest="250">
+                                <Image x:Name="QRCodeImage" Aspect="AspectFit" />
                             </Border>
-                            <Label
-                                Text="Show this QR code at the entrance"
-                                FontSize="13"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
-                                HorizontalOptions="Center"
-                                HorizontalTextAlignment="Center" />
+                            <Label Text="SCAN AT ENTRANCE" FontSize="11" FontAttributes="Bold" CharacterSpacing="2" 
+                                   TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Divider -->
-                    <BoxView
-                        Grid.Row="2"
-                        HeightRequest="1"
-                        Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
-                        Margin="20,0" />
-
-                    <!-- Ticket Details -->
-                    <VerticalStackLayout
-                        Grid.Row="3"
-                        Padding="20"
-                        Spacing="15">
-
-                        <Grid ColumnDefinitions="*,*">
+                    <!-- Details Section -->
+                    <VerticalStackLayout Padding="25" Spacing="25">
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="25">
+                            <!-- Holder -->
                             <VerticalStackLayout Grid.Column="0" Spacing="5">
-                                <Label
-                                    Text="Ticket Holder"
-                                    FontSize="12"
-                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
-                                <Label
-                                    x:Name="TicketHolderLabel"
-                                    FontSize="15"
-                                    FontAttributes="Bold"
-                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                <Label Text="PASSHOLDER" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                                <Label x:Name="TicketHolderLabel" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource White}"/>
                             </VerticalStackLayout>
 
+                            <!-- Price -->
                             <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="End">
-                                <Label
-                                    Text="Price"
-                                    FontSize="12"
-                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
-                                <Label
-                                    x:Name="PriceLabel"
-                                    FontSize="15"
-                                    FontAttributes="Bold"
-                                    TextColor="{StaticResource Primary}" />
-                            </VerticalStackLayout>
-                        </Grid>
-
-                        <Grid ColumnDefinitions="*,*">
-                            <VerticalStackLayout Grid.Column="0" Spacing="5">
-                                <Label
-                                    Text="Purchase Date"
-                                    FontSize="12"
-                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
-                                <Label
-                                    x:Name="PurchaseDateLabel"
-                                    FontSize="14"
-                                    TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                <Label Text="TOTAL PAID" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                                <Label x:Name="PriceLabel" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource White}"/>
                             </VerticalStackLayout>
 
-                            <VerticalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="End">
-                                <Label
-                                    Text="Status"
-                                    FontSize="12"
-                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
-                                <Border
-                                    x:Name="StatusBorder"
-                                    StrokeShape="RoundRectangle 6"
-                                    StrokeThickness="0"
-                                    BackgroundColor="#10B981"
-                                    Padding="10,4">
-                                    <Label
-                                        x:Name="StatusLabel"
-                                        TextColor="White"
-                                        FontSize="12"
-                                        FontAttributes="Bold" />
+                            <!-- Date -->
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="5">
+                                <Label Text="ISSUE DATE" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                                <Label x:Name="PurchaseDateLabel" FontSize="14" TextColor="{StaticResource White}"/>
+                            </VerticalStackLayout>
+
+                            <!-- Status -->
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="5" HorizontalOptions="End">
+                                <Label Text="VALUATION" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                                <Border x:Name="StatusBorder" StrokeShape="RoundRectangle 6" Padding="10,4">
+                                    <Label x:Name="StatusLabel" TextColor="White" FontSize="11" FontAttributes="Bold" />
                                 </Border>
                             </VerticalStackLayout>
                         </Grid>
 
+                        <!-- ID -->
                         <VerticalStackLayout Spacing="5">
-                            <Label
-                                Text="Ticket ID"
-                                FontSize="12"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
-                            <Label
-                                x:Name="TicketIdLabel"
-                                FontSize="12"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}"
-                                FontFamily="Courier" />
+                            <Label Text="TRANSACTION ID" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                            <Label x:Name="TicketIdLabel" FontSize="12" TextColor="{StaticResource TextSecondary}" Opacity="0.5" FontFamily="Courier"/>
                         </VerticalStackLayout>
-
                     </VerticalStackLayout>
 
-                    <!-- Check-in Info (if used) -->
-                    <Border
-                        x:Name="CheckInBorder"
-                        Grid.Row="4"
-                        IsVisible="False"
-                        StrokeShape="RoundRectangle 0,0,20,20"
-                        StrokeThickness="0"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
-                        Padding="20,15">
-                        <VerticalStackLayout Spacing="5">
-                            <Label
-                                Text="✓ Checked In"
-                                FontSize="15"
-                                FontAttributes="Bold"
-                                TextColor="#10B981" />
-                            <Label
-                                x:Name="CheckInDateLabel"
-                                FontSize="13"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
-                        </VerticalStackLayout>
+                    <!-- Check-in Glow (if used) -->
+                    <Border x:Name="CheckInBorder" IsVisible="False" StrokeShape="RoundRectangle 0,0,20,20" StrokeThickness="0" 
+                            BackgroundColor="#1010B981" Padding="25,15">
+                        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                            <Label Text="✓" TextColor="#10B981" FontSize="18" FontAttributes="Bold"/>
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label Text="VERIFIED ENTRY" FontSize="12" FontAttributes="Bold" TextColor="#10B981" CharacterSpacing="1"/>
+                                <Label x:Name="CheckInDateLabel" FontSize="11" TextColor="#10B981" Opacity="0.8"/>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
                     </Border>
-
-                </Grid>
+                </VerticalStackLayout>
             </Border>
 
-            <!-- Action Buttons -->
-            <VerticalStackLayout Spacing="10">
-                <Button
-                    x:Name="DownloadButton"
-                    Text="Download Ticket"
-                    BackgroundColor="{StaticResource Primary}"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"
-                    Clicked="OnDownloadTicketClicked" />
-
-                <Button
-                    x:Name="ShareButton"
-                    Text="Share Ticket"
-                    BackgroundColor="Transparent"
-                    TextColor="{StaticResource Primary}"
-                    BorderColor="{StaticResource Primary}"
-                    BorderWidth="2"
-                    CornerRadius="10"
-                    HeightRequest="50"
-                    Clicked="OnShareTicketClicked" />
+            <!-- Action Tier -->
+            <VerticalStackLayout Spacing="12">
+                <Button x:Name="DownloadButton" Text="Download to Wallet" Style="{StaticResource Button}" Clicked="OnDownloadTicketClicked" />
+                <Button x:Name="ShareButton" Text="Transfer Ticket" Style="{StaticResource Button}" BackgroundColor="Transparent" 
+                        TextColor="{StaticResource Secondary}" BorderColor="{StaticResource Secondary}" BorderWidth="1" Clicked="OnShareTicketClicked" />
             </VerticalStackLayout>
 
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>
