@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using OnlineVoting_and_Ticketing_app.Data;
 using OnlineVoting_and_Ticketing_app.Models;
 using OnlineVoting_and_Ticketing_app.Services;
@@ -16,7 +17,7 @@ namespace OnlineVoting_and_Ticketing_app.Tests.Services
         public PollServiceTests()
         {
             _context = TestDbContextFactory.CreateInMemoryContext();
-            _pollService = new SqlitePollService(_context);
+            _pollService = new SqlitePollService(_context, NullLogger<SqlitePollService>.Instance);
         }
 
         public void Dispose()

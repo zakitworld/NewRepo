@@ -21,22 +21,28 @@
     </PackageReference>
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
   </ItemGroup>
 
-  <!-- Copy source files directly instead of project reference to avoid MAUI dependency issues -->
+  <!-- Source files linked from main project (avoids MAUI dependency) -->
   <ItemGroup>
     <Compile Include="..\OnlineVoting_and_Ticketing app\Models\*.cs" Link="Models\%(Filename)%(Extension)" />
     <Compile Include="..\OnlineVoting_and_Ticketing app\Data\AppDbContext.cs" Link="Data\AppDbContext.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Core\Result.cs" Link="Core\Result.cs" />
     <Compile Include="..\OnlineVoting_and_Ticketing app\Services\IEventService.cs" Link="Services\IEventService.cs" />
     <Compile Include="..\OnlineVoting_and_Ticketing app\Services\IPollService.cs" Link="Services\IPollService.cs" />
     <Compile Include="..\OnlineVoting_and_Ticketing app\Services\ITicketService.cs" Link="Services\ITicketService.cs" />
     <Compile Include="..\OnlineVoting_and_Ticketing app\Services\SqliteEventService.cs" Link="Services\SqliteEventService.cs" />
     <Compile Include="..\OnlineVoting_and_Ticketing app\Services\SqlitePollService.cs" Link="Services\SqlitePollService.cs" />
     <Compile Include="..\OnlineVoting_and_Ticketing app\Services\SqliteTicketService.cs" Link="Services\SqliteTicketService.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Repositories\IRepository.cs" Link="Repositories\IRepository.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Repositories\IUnitOfWork.cs" Link="Repositories\IUnitOfWork.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Repositories\Repository.cs" Link="Repositories\Repository.cs" />
+    <Compile Include="..\OnlineVoting_and_Ticketing app\Repositories\UnitOfWork.cs" Link="Repositories\UnitOfWork.cs" />
   </ItemGroup>
 
 </Project>

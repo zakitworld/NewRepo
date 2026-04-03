@@ -12,7 +12,7 @@ namespace OnlineVoting_and_Ticketing_app
             InitializeComponent();
 
             // Auth Routes
-            Routing.RegisterRoute("login", typeof(LoginPage));
+            // "login" is already declared as Route="login" in AppShell.xaml — do NOT re-register it here.
             Routing.RegisterRoute("register", typeof(RegisterPage));
 
             // Event Routes
@@ -29,6 +29,9 @@ namespace OnlineVoting_and_Ticketing_app
             // Profile Routes
             Routing.RegisterRoute("editprofile", typeof(OnlineVoting_and_Ticketing_app.Views.Profile.EditProfilePage));
             Routing.RegisterRoute("settings", typeof(OnlineVoting_and_Ticketing_app.Views.Profile.SettingsPage));
+
+            // QR Scanner
+            Routing.RegisterRoute("qrscanner", typeof(OnlineVoting_and_Ticketing_app.Views.Tickets.QRScannerPage));
         }
     }
 }

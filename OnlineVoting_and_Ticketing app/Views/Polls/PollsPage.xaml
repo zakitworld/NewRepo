@@ -1,6 +1,5 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              x:Class="OnlineVoting_and_Ticketing_app.Views.Polls.PollsPage"
              Title="Polls &amp; Voting"
              BackgroundColor="{StaticResource Background}">

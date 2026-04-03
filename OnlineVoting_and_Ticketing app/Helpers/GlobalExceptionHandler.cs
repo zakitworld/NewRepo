@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Serilog;
 
 namespace OnlineVoting_and_Ticketing_app.Helpers
 {
@@ -6,31 +6,33 @@ namespace OnlineVoting_and_Ticketing_app.Helpers
     {
         public static void Initialize()
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-            {
-                LogException(args.ExceptionObject as Exception);
-            };
+            AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+                HandleException(args.ExceptionObject as Exception);
 
-            TaskScheduler.UnobservedTaskException += (sender, args) =>
+            TaskScheduler.UnobservedTaskException += (_, args) =>
             {
-                LogException(args.Exception);
+                HandleException(args.Exception);
                 args.SetObserved();
             };
         }
 
-        private static void LogException(Exception? ex)
+        private static void HandleException(Exception? ex)
         {
-            if (ex == null) return;
+            if (ex is null) return;
 
-            Debug.WriteLine($"[GlobalException] {ex.Message}");
-            Debug.WriteLine(ex.StackTrace);
+            // Structured log to file via Serilog
+            Log.Fatal(ex, "Unhandled exception: {Message}", ex.Message);
 
-            // In a real app, you would use a service like AppCenter or Sentry here
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await Shell.Current.DisplayAlertAsync("Unexpected Error",
-                    "An unexpected error occurred. Please try again or contact support if the issue persists.",
-                    "OK");
+                try
+                {
+                    await Shell.Current.DisplayAlertAsync(
+                        "Unexpected Error",
+                        "An unexpected error occurred. The team has been notified. Please restart the app if issues persist.",
+                        "OK");
+                }
+                catch { /* Shell not ready — swallow */ }
             });
         }
     }

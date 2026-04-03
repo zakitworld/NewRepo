@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using OnlineVoting_and_Ticketing_app.Constants;
 using OnlineVoting_and_Ticketing_app.Data;
+using OnlineVoting_and_Ticketing_app.Helpers;
+using OnlineVoting_and_Ticketing_app.Services;
+using Serilog;
 
 namespace OnlineVoting_and_Ticketing_app
 {
@@ -9,57 +12,58 @@ namespace OnlineVoting_and_Ticketing_app
         public App()
         {
             InitializeComponent();
-            Helpers.GlobalExceptionHandler.Initialize();
-
-            // Initialize database
-            InitializeDatabaseAsync();
+            SerilogConfig.Configure();
+            GlobalExceptionHandler.Initialize();
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell())
-            {
-                Title = "EventHub"
-            };
+            var window = new Window(new AppShell()) { Title = "EventHub" };
+
+            // activationState.Context is the IMauiContext — reliably available here,
+            // unlike Handler?.MauiContext which is null during the constructor.
+            if (activationState?.Context?.Services is { } services)
+                _ = InitializeDatabaseAsync(services);
+
+            return window;
         }
 
-        private async void InitializeDatabaseAsync()
+        private async Task InitializeDatabaseAsync(IServiceProvider services)
         {
             try
             {
-                if (Handler?.MauiContext?.Services == null)
-                {
-                    await Task.Delay(1000);
-                    InitializeDatabaseAsync();
-                    return;
-                }
+                // Create / migrate database schema
+                var dbContext = services.GetRequiredService<AppDbContext>();
+                await dbContext.Database.EnsureCreatedAsync();
 
-                var dbContext = Handler.MauiContext.Services.GetRequiredService<AppDbContext>();
-                if (dbContext != null)
-                {
-                    await dbContext.Database.EnsureCreatedAsync();
-                }
+                // Expire stale tickets on startup
+                var ticketService = services.GetRequiredService<ITicketService>();
+                await ticketService.ExpireOldTicketsAsync();
 
-                await CheckAuthenticationAsync();
+                // (AppCenter removed — see csproj comment)
             }
-            catch
+            catch (Exception ex)
             {
-                // Silent fail - app will show login screen on error
+                Log.Error(ex, "Database initialisation failed");
+            }
+            finally
+            {
+                // Always run auth check — navigate to main if logged in,
+                // otherwise the default Shell page (LoginPage) is already shown.
+                await CheckAuthenticationAsync();
             }
         }
 
-        private async Task CheckAuthenticationAsync()
+        private static async Task CheckAuthenticationAsync()
         {
-            // Wait a moment for the app to fully initialize
-            await Task.Delay(500);
-
-            var isLoggedIn = await SecureStorage.GetAsync(Constants.AppConstants.Preferences.IsLoggedIn);
-
-            if (isLoggedIn != "true")
+            await Task.Delay(300);
+            var isLoggedIn = await SecureStorage.GetAsync(AppConstants.Preferences.IsLoggedIn);
+            if (isLoggedIn == "true")
             {
-                // Navigate to login page
-                await Shell.Current.GoToAsync("//login");
+                await MainThread.InvokeOnMainThreadAsync(
+                    () => Shell.Current.GoToAsync("//main/home"));
             }
+            // Not logged in — AppShell already shows LoginPage as the default page.
         }
     }
 }

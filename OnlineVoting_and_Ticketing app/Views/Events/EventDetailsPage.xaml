@@ -1,6 +1,5 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
              x:Class="OnlineVoting_and_Ticketing_app.Views.Events.EventDetailsPage"
              Title="Event Details"
              BackgroundColor="{StaticResource Background}">
@@ -11,7 +10,7 @@
 
                 <!-- Cinematic Header -->
                 <Grid HeightRequest="400">
-                    <ffimageloading:CachedImage x:Name="EventImage" Aspect="AspectFill" />
+                    <Image x:Name="EventImage" Aspect="AspectFill" />
                     <Rectangle Fill="{StaticResource Background}" Opacity="0.3"/>
                     <LinearGradientBrush EndPoint="0,1">
                         <GradientStop Color="Transparent" Offset="0" />

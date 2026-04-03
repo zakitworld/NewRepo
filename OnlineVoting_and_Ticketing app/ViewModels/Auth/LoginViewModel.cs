@@ -16,11 +16,7 @@ namespace OnlineVoting_and_Ticketing_app.ViewModels.Auth
         [ObservableProperty]
         private string _password = string.Empty;
 
-        [ObservableProperty]
-        private string _errorMessage = string.Empty;
-
-        [ObservableProperty]
-        private bool _hasError;
+        // ErrorMessage and HasError are inherited from BaseViewModel — do not redeclare here.
 
         public LoginViewModel(IAuthenticationService authService)
         {

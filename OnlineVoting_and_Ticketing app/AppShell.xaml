@@ -20,34 +20,33 @@
         Route="login" />
 
     <!-- Main App Pages (With TabBar) -->
+    <!-- NOTE: Icon must be a valid image file name, not an emoji string.
+         Android's resource loader throws NotFoundException for emoji strings.
+         Icons will be added once proper image assets (home.png, etc.) are placed
+         in Resources/Images/. For now tabs render with title text only. -->
     <TabBar x:Name="MainTabBar" Route="main">
         <ShellContent
             Title="Home"
-            Icon="🏠"
             ContentTemplate="{DataTemplate local:MainPage}"
             Route="home" />
 
         <ShellContent
             Title="Events"
-            Icon="🎫"
             ContentTemplate="{DataTemplate events:EventsPage}"
             Route="events" />
 
         <ShellContent
             Title="Polls"
-            Icon="📊"
             ContentTemplate="{DataTemplate polls:PollsPage}"
             Route="polls" />
 
         <ShellContent
             Title="Tickets"
-            Icon="🎟️"
             ContentTemplate="{DataTemplate tickets:TicketsPage}"
             Route="tickets" />
 
         <ShellContent
             Title="Profile"
-            Icon="👤"
             ContentTemplate="{DataTemplate profile:ProfilePage}"
             Route="profile" />
     </TabBar>

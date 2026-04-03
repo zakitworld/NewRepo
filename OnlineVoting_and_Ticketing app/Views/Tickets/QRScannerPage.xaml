@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineVoting_and_Ticketing_app.Views.Tickets.QRScannerPage"
+             Title="Check-In Ticket"
+             BackgroundColor="{AppThemeBinding Dark=#0F0F23, Light=#F8F9FA}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="32" Spacing="24" VerticalOptions="Center">
+
+            <!-- Icon -->
+            <Label Text="🎟️" FontSize="64" HorizontalOptions="Center" />
+
+            <Label Text="Ticket Check-In"
+                   FontSize="26" FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Dark=#FFFFFF, Light=#1F2937}" />
+
+            <Label Text="Enter the ticket ID from the attendee's QR code or ticket confirmation email."
+                   FontSize="14" HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                   TextColor="{AppThemeBinding Dark=#94A3B8, Light=#6B7280}" />
+
+            <!-- Ticket ID Entry -->
+            <Border StrokeThickness="1"
+                    Stroke="{AppThemeBinding Dark=#30FFFFFF, Light=#D1D5DB}"
+                    BackgroundColor="{AppThemeBinding Dark=#1E1E3F, Light=#FFFFFF}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="14" />
+                </Border.StrokeShape>
+                <Entry x:Name="TicketIdEntry"
+                       Placeholder="Paste or type ticket ID…"
+                       PlaceholderColor="{AppThemeBinding Dark=#4B5563, Light=#9CA3AF}"
+                       TextColor="{AppThemeBinding Dark=#FFFFFF, Light=#1F2937}"
+                       FontSize="15"
+                       Margin="16,12"
+                       ReturnType="Done"
+                       ReturnCommand="{Binding Source={x:Reference CheckInButton}, Path=Command}" />
+            </Border>
+
+            <!-- Check-In Button -->
+            <Button x:Name="CheckInButton"
+                    Text="CHECK IN"
+                    BackgroundColor="#8B5CF6"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="15"
+                    CornerRadius="14"
+                    HeightRequest="54"
+                    Clicked="OnCheckInClicked" />
+
+            <!-- Status -->
+            <Border x:Name="StatusBorder"
+                    IsVisible="False"
+                    StrokeThickness="0"
+                    Padding="16,12">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Label x:Name="StatusLabel"
+                       FontSize="15" FontAttributes="Bold"
+                       HorizontalOptions="Center" />
+            </Border>
+
+            <ActivityIndicator x:Name="LoadingIndicator"
+                               IsRunning="False" IsVisible="False"
+                               Color="#8B5CF6"
+                               HorizontalOptions="Center" />
+
+            <!-- Paste from clipboard helper -->
+            <Button Text="📋  Paste from Clipboard"
+                    BackgroundColor="Transparent"
+                    TextColor="#8B5CF6"
+                    FontSize="14"
+                    BorderWidth="0"
+                    Clicked="OnPasteClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

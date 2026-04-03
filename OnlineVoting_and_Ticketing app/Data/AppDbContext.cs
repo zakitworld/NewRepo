@@ -94,20 +94,23 @@ namespace OnlineVoting_and_Ticketing_app.Data
 
         private void SeedData(ModelBuilder modelBuilder)
         {
+            // HasData() requires static/constant values — never use Guid.NewGuid() or
+            // DateTime.UtcNow here because EF Core bakes these into the model snapshot.
             var hasher = new PasswordHasher<ApplicationUser>();
 
             var adminUser = new ApplicationUser
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = "a1b2c3d4-0001-0001-0001-000000000001",
                 UserName = "admin@eventhub.com",
                 NormalizedUserName = "ADMIN@EVENTHUB.COM",
                 Email = "admin@eventhub.com",
                 NormalizedEmail = "ADMIN@EVENTHUB.COM",
                 EmailConfirmed = true,
                 FullName = "Admin User",
-                SecurityStamp = Guid.NewGuid().ToString(),
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow,
+                SecurityStamp = "a1b2c3d4-0002-0002-0002-000000000002",
+                ConcurrencyStamp = "a1b2c3d4-0003-0003-0003-000000000003",
+                CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 IsActive = true
             };
 

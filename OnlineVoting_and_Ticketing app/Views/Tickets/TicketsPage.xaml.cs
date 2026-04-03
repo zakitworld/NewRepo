@@ -1,67 +1,22 @@
-using OnlineVoting_and_Ticketing_app.Constants;
-using OnlineVoting_and_Ticketing_app.Models;
-using OnlineVoting_and_Ticketing_app.Services;
+using OnlineVoting_and_Ticketing_app.ViewModels.Tickets;
 
 namespace OnlineVoting_and_Ticketing_app.Views.Tickets
 {
     public partial class TicketsPage : ContentPage
     {
-        private readonly ITicketService _ticketService;
-        private List<Ticket> _tickets = new();
+        private readonly TicketsViewModel _viewModel;
 
-        public TicketsPage(ITicketService ticketService)
+        public TicketsPage(TicketsViewModel viewModel)
         {
             InitializeComponent();
-            _ticketService = ticketService;
+            _viewModel = viewModel;
+            BindingContext = viewModel;
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await LoadTicketsAsync();
-        }
-
-        private async Task LoadTicketsAsync()
-        {
-            LoadingIndicator.IsVisible = true;
-            LoadingIndicator.IsRunning = true;
-
-            var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
-            if (string.IsNullOrEmpty(userId))
-            {
-                LoadingIndicator.IsVisible = false;
-                LoadingIndicator.IsRunning = false;
-                await DisplayAlertAsync("Authentication Required", "Please login to view your tickets", "OK");
-                await Shell.Current.GoToAsync("//login");
-                return;
-            }
-
-            _tickets = await _ticketService.GetUserTicketsAsync(userId);
-            TicketsCollectionView.ItemsSource = _tickets;
-            TicketCountLabel.Text = $"{_tickets.Count} {(_tickets.Count == 1 ? "ticket" : "tickets")}";
-
-            LoadingIndicator.IsVisible = false;
-            LoadingIndicator.IsRunning = false;
-            RefreshView.IsRefreshing = false;
-        }
-
-        private async void OnRefreshing(object? sender, EventArgs e)
-        {
-            await LoadTicketsAsync();
-        }
-
-        private async void OnTicketSelected(object? sender, SelectionChangedEventArgs e)
-        {
-            if (e.CurrentSelection.FirstOrDefault() is Ticket selectedTicket)
-            {
-                await Shell.Current.GoToAsync($"ticketdetails?ticketId={selectedTicket.Id}");
-                ((CollectionView)sender!).SelectedItem = null;
-            }
-        }
-
-        private async void OnBrowseEventsClicked(object? sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("//events");
+            await _viewModel.LoadTicketsCommand.ExecuteAsync(null);
         }
     }
 }

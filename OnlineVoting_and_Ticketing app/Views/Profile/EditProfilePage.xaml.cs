@@ -63,10 +63,11 @@ namespace OnlineVoting_and_Ticketing_app.Views.Profile
         {
             try
             {
-                var result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
+                var results = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
                 {
                     Title = "Select Profile Photo"
                 });
+                var result = results?.FirstOrDefault();
 
                 if (result != null)
                 {
@@ -79,7 +80,7 @@ namespace OnlineVoting_and_Ticketing_app.Views.Profile
             }
             catch (PermissionException)
             {
-                await DisplayAlert("Permission Required", "Please grant photo access permission to change your profile picture.", "OK");
+                await DisplayAlertAsync("Permission Required", "Please grant photo access permission to change your profile picture.", "OK");
             }
             catch (Exception ex)
             {

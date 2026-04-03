@@ -31,6 +31,7 @@ namespace OnlineVoting_and_Ticketing_app.Constants
             public const string Settings = "settings";
             public const string CreateEvent = "createevent";
             public const string CreatePoll = "createpoll";
+            public const string QRScanner = "qrscanner";
         }
 
         public static class Preferences

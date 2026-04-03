@@ -24,7 +24,18 @@
 		<!-- Platform Support -->
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+
+		<!-- Use D8 instead of R8 to avoid duplicate-class errors from mismatched
+		     transitive AndroidX Tracing / Tracing-Ktx AAR versions -->
+		<AndroidDexTool>d8</AndroidDexTool>
+		<UserSecretsId>42170273-ea1d-4478-ac6d-0df2d1ff45f6</UserSecretsId>
 	</PropertyGroup>
+
+	<!-- Embed appsettings.json as a resource readable via GetManifestResourceStream -->
+	<ItemGroup>
+		<EmbeddedResource Include="appsettings.json" />
+	</ItemGroup>
+
 
 	<ItemGroup>
 		<!-- App Icon -->
@@ -44,6 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
 
@@ -63,17 +75,41 @@
 
 		<!-- QR Code Generation -->
 		<PackageReference Include="QRCoder" Version="1.6.0" />
-		<PackageReference Include="SkiaSharp" Version="3.0.0" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.0.0" />
+		<PackageReference Include="SkiaSharp" Version="3.116.1" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.116.1" />
 
-		<!-- Image Caching and Loading -->
-		<PackageReference Include="FFImageLoading.Maui" Version="1.2.7" />
+		<!-- Image Caching: FFImageLoading is deprecated; .NET MAUI 10 Image control
+		     has built-in caching via Microsoft.Maui.Controls — no extra package needed -->
 
 		<!-- HTTP Client -->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
 		<!-- Password Hashing -->
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+
+		<!-- Configuration -->
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
+
+		<!-- Structured Logging -->
+		<PackageReference Include="Serilog" Version="4.1.0" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+
+		<!-- Email: sent via HTTP relay (no SMTP from device; avoids carrier port blocks) -->
+
+		<!-- No third-party QR scanner library supports net10.0-android yet.
+		     QRScannerPage uses a manual ticket ID entry as a reliable fallback. -->
+
+		<!-- AppCenter was discontinued by Microsoft in March 2025 and its native Android .so
+		     files are not 16 KB page-aligned, causing an immediate linker crash on Android 16
+		     (API 36). Removed entirely. -->
+
+		<!-- TOTP / 2FA -->
+		<PackageReference Include="Otp.NET" Version="1.4.0" />
+
+		<!-- SQLite Encryption (SQLCipher) — 2.1.10+ has 16 KB page-aligned .so for Android 16 -->
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.10" />
 	</ItemGroup>
 
 </Project>
