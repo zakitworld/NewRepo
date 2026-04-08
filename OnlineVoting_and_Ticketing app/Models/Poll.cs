@@ -20,6 +20,11 @@ namespace OnlineVoting_and_Ticketing_app.Models
         public int TotalVotes { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        // Paid voting (e.g. awards/contestant polls)
+        public bool IsPaidVoting { get; set; }
+        public decimal VotePriceGhs { get; set; } = 1.0m;
+        public int MaxVotesPerUser { get; set; } = 0; // 0 = unlimited
     }
 
     public class PollOption
@@ -30,6 +35,10 @@ namespace OnlineVoting_and_Ticketing_app.Models
         public string? ImageUrl { get; set; }
         public int VoteCount { get; set; }
         public int Order { get; set; }
+
+        // Contestant-mode fields (used when Poll.IsPaidVoting = true)
+        public string? ContestantPhotoUrl { get; set; }
+        public string? ContestantBio { get; set; }
     }
 
     public class Vote

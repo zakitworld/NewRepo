@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="OnlineVoting_and_Ticketing app/OnlineVoting_and_Ticketing app.csproj" />
+  <Project Path="EventHub.Api/EventHub.Api.csproj" />
 </Solution>

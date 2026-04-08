@@ -98,8 +98,8 @@
             </Border.GestureRecognizers>
         </Border>
 
-        <ActivityIndicator Grid.Row="1" x:Name="LoadingIndicator" IsRunning="False" 
-                          IsVisible="False" Style="{StaticResource ActivityIndicator}" 
+        <ActivityIndicator Grid.Row="1" x:Name="LoadingIndicator" IsRunning="False"
+                          IsVisible="False" Color="{StaticResource Primary}"
                           VerticalOptions="Center" HorizontalOptions="Center"/>
     </Grid>
 </ContentPage>

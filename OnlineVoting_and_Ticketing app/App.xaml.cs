@@ -14,6 +14,20 @@ namespace OnlineVoting_and_Ticketing_app
             InitializeComponent();
             SerilogConfig.Configure();
             GlobalExceptionHandler.Initialize();
+            ApplySavedTheme();
+        }
+
+        /// <summary>
+        /// Restores the user's saved dark/light mode preference on every cold start.
+        /// </summary>
+        private static void ApplySavedTheme()
+        {
+            try
+            {
+                var isDark = Preferences.Get("settings_dark_mode", true);
+                Current!.UserAppTheme = isDark ? AppTheme.Dark : AppTheme.Light;
+            }
+            catch { /* fall back to system default */ }
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
@@ -57,11 +71,20 @@ namespace OnlineVoting_and_Ticketing_app
         private static async Task CheckAuthenticationAsync()
         {
             await Task.Delay(300);
-            var isLoggedIn = await SecureStorage.GetAsync(AppConstants.Preferences.IsLoggedIn);
-            if (isLoggedIn == "true")
+            try
             {
-                await MainThread.InvokeOnMainThreadAsync(
-                    () => Shell.Current.GoToAsync("//main/home"));
+                var isLoggedIn = await SecureStorage.GetAsync(AppConstants.Preferences.IsLoggedIn);
+                if (isLoggedIn == "true")
+                {
+                    await MainThread.InvokeOnMainThreadAsync(
+                        () => Shell.Current.GoToAsync("//main/home"));
+                }
+            }
+            catch
+            {
+                // SecureStorage may be unavailable on some platforms or in tests.
+                // Swallow exceptions here to avoid crashing the app during startup
+                // and allow the default (login) page to be shown.
             }
             // Not logged in — AppShell already shows LoginPage as the default page.
         }

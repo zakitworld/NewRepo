@@ -79,6 +79,8 @@ namespace OnlineVoting_and_Ticketing_app.Data
             {
                 entity.HasKey(o => o.Id);
                 entity.Property(o => o.Text).IsRequired().HasMaxLength(500);
+                entity.Property(o => o.ContestantBio).HasMaxLength(500);
+                entity.Property(o => o.ContestantPhotoUrl).HasMaxLength(1000);
             });
 
             // TicketType configuration
@@ -117,6 +119,30 @@ namespace OnlineVoting_and_Ticketing_app.Data
             adminUser.PasswordHash = hasher.HashPassword(adminUser, "Admin@123");
 
             modelBuilder.Entity<ApplicationUser>().HasData(adminUser);
+
+            // Seed Identity roles
+            var adminRole = new IdentityRole
+            {
+                Id = "role-0001-0001-0001-000000000001",
+                Name = "Admin",
+                NormalizedName = "ADMIN",
+                ConcurrencyStamp = "role-0002-0002-0002-000000000002"
+            };
+            var organizerRole = new IdentityRole
+            {
+                Id = "role-0003-0003-0003-000000000003",
+                Name = "EventOrganizer",
+                NormalizedName = "EVENTORGANIZER",
+                ConcurrencyStamp = "role-0004-0004-0004-000000000004"
+            };
+            modelBuilder.Entity<IdentityRole>().HasData(adminRole, organizerRole);
+
+            // Assign Admin role to seed admin user
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                UserId = "a1b2c3d4-0001-0001-0001-000000000001",
+                RoleId = "role-0001-0001-0001-000000000001"
+            });
         }
     }
 

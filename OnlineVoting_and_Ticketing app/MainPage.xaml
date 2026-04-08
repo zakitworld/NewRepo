@@ -1,71 +1,143 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shared="clr-namespace:OnlineVoting_and_Ticketing_app.Views.Shared"
              x:Class="OnlineVoting_and_Ticketing_app.MainPage"
              BackgroundColor="{StaticResource Background}">
 
-    <Grid>
+    <Grid RowDefinitions="Auto,*">
+        <!-- Offline banner (row 0) -->
+        <shared:OfflineBanner Grid.Row="0" />
+
         <!-- Background Accents -->
-        <Ellipse WidthRequest="400" HeightRequest="400" 
-                 Fill="{StaticResource Primary}" 
-                 Opacity="0.1" VerticalOptions="Start" 
+        <Ellipse Grid.Row="1" WidthRequest="400" HeightRequest="400"
+                 Fill="{StaticResource Primary}"
+                 Opacity="0.1" VerticalOptions="Start"
                  HorizontalOptions="Start" Margin="-200,-200,0,0">
             <Ellipse.Shadow>
                 <Shadow Brush="{StaticResource Primary}" Radius="100" Opacity="0.3"/>
             </Ellipse.Shadow>
         </Ellipse>
 
-        <ScrollView>
-            <VerticalStackLayout Padding="25,40" Spacing="30">
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="0,0,0,30" Spacing="28">
 
-                <!-- Header Section -->
-                <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
-                    <Border WidthRequest="60" HeightRequest="60" 
-                            StrokeShape="RoundRectangle 30" 
-                            StrokeThickness="0" 
+                <!-- ── Header ──────────────────────────────────────────── -->
+                <HorizontalStackLayout Spacing="15" VerticalOptions="Center" Padding="25,40,25,0">
+                    <Border WidthRequest="60" HeightRequest="60"
+                            StrokeShape="RoundRectangle 30"
+                            StrokeThickness="0"
                             BackgroundColor="{StaticResource Surface}">
                         <Label Text="👋" FontSize="30" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
                     <VerticalStackLayout VerticalOptions="Center">
-                        <Label x:Name="WelcomeLabel" 
-                               Text="Hello, Explorer" 
-                               FontSize="24" 
-                               FontAttributes="Bold" 
+                        <Label x:Name="WelcomeLabel"
+                               Text="Hello, Explorer"
+                               FontSize="24"
+                               FontAttributes="Bold"
                                TextColor="{StaticResource White}"/>
-                        <Label Text="What's your plan for today?" 
-                               TextColor="{StaticResource TextSecondary}" 
+                        <Label Text="What's your plan for today?"
+                               TextColor="{StaticResource TextSecondary}"
                                FontSize="14"/>
                     </VerticalStackLayout>
                 </HorizontalStackLayout>
 
-                <!-- Featured Card (Promotion/Info) -->
-                <Border Style="{StaticResource Border}" Padding="0" HeightRequest="180">
-                    <Grid>
-                        <Image Source="dotnet_bot.png" Aspect="AspectFill" Opacity="0.4"/>
-                        <Rectangle Fill="{StaticResource PrimaryBrush}" Opacity="0.6"/>
-                        <VerticalStackLayout VerticalOptions="End" Padding="20" Spacing="5">
-                            <Label Text="UPCOMING EVENTS" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource White}" Opacity="0.8"/>
-                            <Label Text="Tech Conference 2026" FontSize="22" FontAttributes="Bold" TextColor="{StaticResource White}"/>
-                            <Label Text="Join the biggest talk of the year!" FontSize="12" TextColor="{StaticResource White}"/>
+                <!-- ── Stats Card ──────────────────────────────────────── -->
+                <Border Style="{StaticResource Border}" Padding="20" Margin="25,0">
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label x:Name="EventsCountLabel" Text="—" FontSize="28" FontAttributes="Bold"
+                                   TextColor="{StaticResource Primary}" HorizontalOptions="Center"/>
+                            <Label Text="Events" FontSize="12" TextColor="{StaticResource TextSecondary}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                            <Label x:Name="PollsCountLabel" Text="—" FontSize="28" FontAttributes="Bold"
+                                   TextColor="{StaticResource Secondary}" HorizontalOptions="Center"/>
+                            <Label Text="Active Polls" FontSize="12" TextColor="{StaticResource TextSecondary}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2" Spacing="4" HorizontalOptions="Center">
+                            <Label x:Name="TicketsCountLabel" Text="—" FontSize="28" FontAttributes="Bold"
+                                   TextColor="#10B981" HorizontalOptions="Center"/>
+                            <Label Text="My Tickets" FontSize="12" TextColor="{StaticResource TextSecondary}"
+                                   HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                     </Grid>
                 </Border>
 
-                <!-- Action Grid -->
-                <VerticalStackLayout Spacing="15">
-                    <Label Text="Browse Categories" 
-                           FontSize="18" 
-                           FontAttributes="Bold" 
+                <!-- ── Featured Events Carousel ───────────────────────── -->
+                <VerticalStackLayout Spacing="12">
+
+                    <!-- Section header -->
+                    <Grid ColumnDefinitions="*,Auto" Padding="25,0">
+                        <Label Text="Featured Events"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{StaticResource White}"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               x:Name="SeeAllLabel"
+                               Text="See All →"
+                               FontSize="13"
+                               TextColor="{StaticResource Primary}"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnSeeAllEventsTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+
+                    <!-- Carousel -->
+                    <CarouselView x:Name="FeaturedCarousel"
+                                  HeightRequest="230"
+                                  Loop="True"
+                                  PeekAreaInsets="30"
+                                  IndicatorView="CarouselDots"
+                                  ItemTemplate="{StaticResource FeaturedEventCardTemplate}">
+                        <CarouselView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="14"/>
+                        </CarouselView.ItemsLayout>
+                    </CarouselView>
+
+                    <!-- Dot indicators -->
+                    <IndicatorView x:Name="CarouselDots"
+                                   HorizontalOptions="Center"
+                                   IndicatorColor="{StaticResource GlassBrush}"
+                                   SelectedIndicatorColor="{StaticResource Primary}"
+                                   IndicatorsShape="Circle"
+                                   IndicatorSize="8"
+                                   Margin="0,4,0,0"/>
+
+                    <!-- Skeleton shown while loading -->
+                    <Border x:Name="CarouselSkeleton"
+                            IsVisible="True"
+                            HeightRequest="230"
+                            Margin="25,0"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16"
+                            BackgroundColor="{StaticResource Surface}">
+                        <ActivityIndicator IsRunning="True"
+                                           Color="{StaticResource Primary}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- ── Browse Categories ───────────────────────────────── -->
+                <VerticalStackLayout Spacing="15" Padding="25,0">
+                    <Label Text="Browse Categories"
+                           FontSize="18"
+                           FontAttributes="Bold"
                            TextColor="{StaticResource White}"/>
 
                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="15" RowSpacing="15">
 
-                        <!-- Events -->
-                        <Border Grid.Row="0" Grid.Column="0" 
-                                Style="{StaticResource Border}" 
-                                Padding="15" HeightRequest="140">
+                        <Border Grid.Row="0" Grid.Column="0"
+                                Style="{StaticResource Border}"
+                                Padding="15" HeightRequest="120">
                             <VerticalStackLayout Spacing="12" VerticalOptions="Center">
-                                <Label Text="📅" FontSize="36" HorizontalOptions="Center"/>
-                                <Label Text="Events" HorizontalOptions="Center" 
+                                <Label Text="📅" FontSize="32" HorizontalOptions="Center"/>
+                                <Label Text="Events" HorizontalOptions="Center"
                                        FontAttributes="Bold" TextColor="{StaticResource White}"/>
                             </VerticalStackLayout>
                             <Border.GestureRecognizers>
@@ -73,13 +145,12 @@
                             </Border.GestureRecognizers>
                         </Border>
 
-                        <!-- Polls -->
-                        <Border Grid.Row="0" Grid.Column="1" 
-                                Style="{StaticResource Border}" 
-                                Padding="15" HeightRequest="140">
+                        <Border Grid.Row="0" Grid.Column="1"
+                                Style="{StaticResource Border}"
+                                Padding="15" HeightRequest="120">
                             <VerticalStackLayout Spacing="12" VerticalOptions="Center">
-                                <Label Text="📊" FontSize="36" HorizontalOptions="Center"/>
-                                <Label Text="Polls" HorizontalOptions="Center" 
+                                <Label Text="📊" FontSize="32" HorizontalOptions="Center"/>
+                                <Label Text="Polls" HorizontalOptions="Center"
                                        FontAttributes="Bold" TextColor="{StaticResource White}"/>
                             </VerticalStackLayout>
                             <Border.GestureRecognizers>
@@ -87,13 +158,12 @@
                             </Border.GestureRecognizers>
                         </Border>
 
-                        <!-- Tickets -->
-                        <Border Grid.Row="1" Grid.Column="0" 
-                                Style="{StaticResource Border}" 
-                                Padding="15" HeightRequest="140">
+                        <Border Grid.Row="1" Grid.Column="0"
+                                Style="{StaticResource Border}"
+                                Padding="15" HeightRequest="120">
                             <VerticalStackLayout Spacing="12" VerticalOptions="Center">
-                                <Label Text="🎫" FontSize="36" HorizontalOptions="Center"/>
-                                <Label Text="My Tickets" HorizontalOptions="Center" 
+                                <Label Text="🎫" FontSize="32" HorizontalOptions="Center"/>
+                                <Label Text="My Tickets" HorizontalOptions="Center"
                                        FontAttributes="Bold" TextColor="{StaticResource White}"/>
                             </VerticalStackLayout>
                             <Border.GestureRecognizers>
@@ -101,13 +171,12 @@
                             </Border.GestureRecognizers>
                         </Border>
 
-                        <!-- Profile -->
-                        <Border Grid.Row="1" Grid.Column="1" 
-                                Style="{StaticResource Border}" 
-                                Padding="15" HeightRequest="140">
+                        <Border Grid.Row="1" Grid.Column="1"
+                                Style="{StaticResource Border}"
+                                Padding="15" HeightRequest="120">
                             <VerticalStackLayout Spacing="12" VerticalOptions="Center">
-                                <Label Text="👤" FontSize="36" HorizontalOptions="Center"/>
-                                <Label Text="Account" HorizontalOptions="Center" 
+                                <Label Text="👤" FontSize="32" HorizontalOptions="Center"/>
+                                <Label Text="Account" HorizontalOptions="Center"
                                        FontAttributes="Bold" TextColor="{StaticResource White}"/>
                             </VerticalStackLayout>
                             <Border.GestureRecognizers>
@@ -117,8 +186,8 @@
                     </Grid>
                 </VerticalStackLayout>
 
-                <!-- Content/Info Section -->
-                <Border Style="{StaticResource Border}" Padding="20">
+                <!-- ── Quick Tips ──────────────────────────────────────── -->
+                <Border Style="{StaticResource Border}" Padding="20" Margin="25,0">
                     <VerticalStackLayout Spacing="15">
                         <Label Text="Quick Tips" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
                         <VerticalStackLayout Spacing="10">
@@ -141,5 +210,77 @@
             </VerticalStackLayout>
         </ScrollView>
     </Grid>
+
+    <!-- ── Featured event card DataTemplate (defined as page resource) ── -->
+    <ContentPage.Resources>
+        <DataTemplate x:Key="FeaturedEventCardTemplate">
+            <Border StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    WidthRequest="300"
+                    HeightRequest="220"
+                    Padding="0"
+                    Margin="0">
+                <Grid>
+                    <!-- Background image -->
+                    <Image Source="{Binding ImageUrl}"
+                           Aspect="AspectFill"
+                           HeightRequest="220"/>
+
+                    <!-- Gradient overlay (bottom-up dark fade) -->
+                    <Rectangle HeightRequest="220">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="Transparent" Offset="0.35"/>
+                                <GradientStop Color="#E00A0A0C"   Offset="1.0"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+
+                    <!-- Category badge (top-right) -->
+                    <Border HorizontalOptions="End" VerticalOptions="Start"
+                            Margin="12" Padding="10,5"
+                            StrokeShape="RoundRectangle 8"
+                            Background="#CC16161A"
+                            StrokeThickness="0">
+                        <Label Text="{Binding Category}"
+                               TextColor="{StaticResource Primary}"
+                               FontSize="9" FontAttributes="Bold"
+                               CharacterSpacing="1"/>
+                    </Border>
+
+                    <!-- Event info (bottom overlay) -->
+                    <VerticalStackLayout VerticalOptions="End" Padding="16,12" Spacing="6">
+                        <Label Text="{Binding Title}"
+                               TextColor="White"
+                               FontSize="17"
+                               FontAttributes="Bold"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="2"/>
+                        <HorizontalStackLayout Spacing="14">
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="📅" FontSize="11" VerticalOptions="Center" Opacity="0.8"/>
+                                <Label Text="{Binding StartDate, StringFormat='{0:ddd, MMM dd}'}"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       FontSize="12"/>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="5">
+                                <Label Text="📍" FontSize="11" VerticalOptions="Center" Opacity="0.8"/>
+                                <Label Text="{Binding Location}"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       FontSize="12"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1"/>
+                            </HorizontalStackLayout>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Tap navigates to event details -->
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnFeaturedEventTapped"/>
+                </Border.GestureRecognizers>
+            </Border>
+        </DataTemplate>
+    </ContentPage.Resources>
 
 </ContentPage>

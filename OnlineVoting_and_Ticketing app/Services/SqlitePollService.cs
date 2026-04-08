@@ -223,6 +223,59 @@ namespace OnlineVoting_and_Ticketing_app.Services
             }
         }
 
+        public async Task<(bool Success, string? Error)> CastPaidVoteAsync(
+            string pollId, string userId, string optionId, int voteCount)
+        {
+            try
+            {
+                var poll = await GetPollByIdAsync(pollId);
+                if (poll == null) return (false, "Poll not found");
+                if (!poll.IsPaidVoting) return (false, "This poll does not support paid voting");
+                if (poll.Status != PollStatus.Active) return (false, "Poll is not active");
+
+                var now = DateTime.UtcNow;
+                if (now < poll.StartDate) return (false, "Poll has not started yet");
+                if (now > poll.EndDate) return (false, "Poll has ended");
+
+                if (poll.MaxVotesPerUser > 0)
+                {
+                    var alreadyCast = await GetUserVoteCountAsync(pollId, userId);
+                    if (alreadyCast + voteCount > poll.MaxVotesPerUser)
+                        return (false, $"You can cast at most {poll.MaxVotesPerUser} votes on this poll");
+                }
+
+                var option = poll.Options.FirstOrDefault(o => o.Id == optionId);
+                if (option == null) return (false, "Contestant not found");
+
+                // One Vote record per individual paid vote
+                for (int i = 0; i < voteCount; i++)
+                {
+                    _context.Votes.Add(new Vote
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        PollId = pollId,
+                        UserId = userId,
+                        SelectedOptionIds = [optionId],
+                        VotedAt = DateTime.UtcNow
+                    });
+                    option.VoteCount++;
+                    poll.TotalVotes++;
+                }
+
+                await UpdatePollAsync(poll);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("{VoteCount} paid vote(s) cast by {UserId} for option {OptionId} on poll {PollId}",
+                    voteCount, userId, optionId, pollId);
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "CastPaidVoteAsync failed for poll {PollId}", pollId);
+                return (false, ex.Message);
+            }
+        }
+
         public async Task<bool> HasUserVotedAsync(string pollId, string userId)
         {
             try
@@ -233,6 +286,19 @@ namespace OnlineVoting_and_Ticketing_app.Services
             {
                 _logger.LogError(ex, "HasUserVotedAsync failed");
                 return false;
+            }
+        }
+
+        public async Task<int> GetUserVoteCountAsync(string pollId, string userId)
+        {
+            try
+            {
+                return await _context.Votes.CountAsync(v => v.PollId == pollId && v.UserId == userId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetUserVoteCountAsync failed");
+                return 0;
             }
         }
 

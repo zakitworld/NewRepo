@@ -41,8 +41,9 @@ namespace OnlineVoting_and_Ticketing_app.Services
                 if (!isPasswordValid)
                     return (false, "Invalid email or password", null);
 
-                await PersistSessionAsync(user);
-                return (true, null, MapToUser(user));
+                var roles = await _userManager.GetRolesAsync(user);
+                await PersistSessionAsync(user, roles);
+                return (true, null, MapToUser(user, roles));
             }
             catch (Exception ex)
             {
@@ -78,7 +79,7 @@ namespace OnlineVoting_and_Ticketing_app.Services
                 }
 
                 await PersistSessionAsync(user);
-                return (true, null, MapToUser(user));
+                return (true, null, MapToUser(user, null));
             }
             catch (Exception ex)
             {
@@ -130,7 +131,7 @@ namespace OnlineVoting_and_Ticketing_app.Services
                     }
 
                     await PersistSessionAsync(user);
-                    return (true, null, MapToUser(user));
+                    return (true, null, MapToUser(user, null));
                 }
 
                 return (false, "Google sign-in was cancelled or failed.", null);
@@ -189,7 +190,7 @@ namespace OnlineVoting_and_Ticketing_app.Services
                     }
 
                     await PersistSessionAsync(user);
-                    return (true, null, MapToUser(user));
+                    return (true, null, MapToUser(user, null));
                 }
 
                 return (false, "Apple Sign-In was cancelled or failed.", null);
@@ -234,7 +235,9 @@ namespace OnlineVoting_and_Ticketing_app.Services
             var userId = await SecureStorage.GetAsync(AppConstants.Preferences.UserId);
             if (string.IsNullOrEmpty(userId)) return null;
             var user = await _userManager.FindByIdAsync(userId);
-            return user != null ? MapToUser(user) : null;
+            if (user == null) return null;
+            var roles = await _userManager.GetRolesAsync(user);
+            return MapToUser(user, roles);
         }
 
         public async Task<bool> IsUserLoggedInAsync()
@@ -258,9 +261,10 @@ namespace OnlineVoting_and_Ticketing_app.Services
                     return true;
                 }
 
-                // Generate 6-digit numeric token
-                var random = new Random();
-                var resetCode = random.Next(100000, 999999).ToString();
+                // Generate cryptographically secure 6-digit reset code
+                var bytes = new byte[4];
+                System.Security.Cryptography.RandomNumberGenerator.Fill(bytes);
+                var resetCode = (Math.Abs(BitConverter.ToInt32(bytes, 0)) % 900000 + 100000).ToString();
 
                 // Store token with 15-minute expiry in SecureStorage
                 var storageKey = $"reset_{Uri.EscapeDataString(email)}";
@@ -378,15 +382,19 @@ namespace OnlineVoting_and_Ticketing_app.Services
             }
         }
 
-        private async Task PersistSessionAsync(ApplicationUser user)
+        private async Task PersistSessionAsync(ApplicationUser user, IList<string>? roles = null)
         {
             await SecureStorage.SetAsync(AppConstants.Preferences.IsLoggedIn, "true");
             await SecureStorage.SetAsync(AppConstants.Preferences.UserId, user.Id);
             await SecureStorage.SetAsync(AppConstants.Preferences.UserEmail, user.Email ?? string.Empty);
             await SecureStorage.SetAsync(AppConstants.Preferences.UserName, user.FullName);
+            var roleValue = roles?.Contains("Admin") == true ? "Admin"
+                : roles?.Contains("EventOrganizer") == true ? "EventOrganizer"
+                : "User";
+            await SecureStorage.SetAsync(AppConstants.Preferences.UserRole, roleValue);
         }
 
-        private static User MapToUser(ApplicationUser appUser) => new()
+        private static User MapToUser(ApplicationUser appUser, IList<string>? roles = null) => new()
         {
             Id = appUser.Id,
             Email = appUser.Email ?? string.Empty,
@@ -397,7 +405,9 @@ namespace OnlineVoting_and_Ticketing_app.Services
             CreatedAt = appUser.CreatedAt,
             UpdatedAt = appUser.UpdatedAt,
             IsActive = appUser.IsActive,
-            Role = UserRole.User
+            Role = roles?.Contains("Admin") == true ? UserRole.Admin
+                 : roles?.Contains("EventOrganizer") == true ? UserRole.EventOrganizer
+                 : UserRole.User
         };
     }
 }

@@ -10,6 +10,7 @@ using OnlineVoting_and_Ticketing_app.ViewModels.Polls;
 using OnlineVoting_and_Ticketing_app.ViewModels.Profile;
 using OnlineVoting_and_Ticketing_app.ViewModels.Tickets;
 using Serilog;
+using OnlineVoting_and_Ticketing_app.Helpers;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Reflection;
 
@@ -20,6 +21,9 @@ namespace OnlineVoting_and_Ticketing_app
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
+
+            // Configure Serilog early so startup errors are captured to the file sink.
+            SerilogConfig.Configure();
 
             builder
                 .UseMauiApp<App>()
@@ -48,7 +52,21 @@ namespace OnlineVoting_and_Ticketing_app
             // The encryption key is derived from the app's unique install ID stored in
             // SecureStorage. On first run a new random key is generated and persisted.
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "eventhub.db");
-            var dbEncryptionKey = GetOrCreateDbKeyAsync().GetAwaiter().GetResult();
+            string dbEncryptionKey;
+            try
+            {
+                // Avoid deadlock by running the async SecureStorage call on a thread pool thread.
+                // Calling GetAwaiter().GetResult() directly on the main thread can deadlock
+                // because platform SecureStorage implementations may require the main thread.
+                dbEncryptionKey = Task.Run(() => GetOrCreateDbKeyAsync()).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                // Defensive: if anything goes wrong retrieving the key, fall back to no encryption
+                // to avoid crashing the app during startup. The error is recorded to the Serilog file sink.
+                Serilog.Log.Error(ex, "Failed to retrieve DB encryption key; falling back to unencrypted DB.");
+                dbEncryptionKey = string.Empty;
+            }
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlite($"Data Source={dbPath};Password={dbEncryptionKey}"));

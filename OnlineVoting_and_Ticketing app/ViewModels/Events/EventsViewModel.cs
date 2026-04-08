@@ -21,6 +21,10 @@ namespace OnlineVoting_and_Ticketing_app.ViewModels.Events
         [ObservableProperty]
         private ObservableCollection<Event> _events = [];
 
+        /// <summary>Top 5–8 events shown in the horizontal "Trending" carousel.</summary>
+        [ObservableProperty]
+        private ObservableCollection<Event> _featuredEvents = [];
+
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SearchCommand))]
         private string _searchText = string.Empty;
@@ -68,6 +72,9 @@ namespace OnlineVoting_and_Ticketing_app.ViewModels.Events
 
                 Events = new ObservableCollection<Event>(loaded);
                 _hasMorePages = loaded.Count == PageSize;
+
+                // Populate featured carousel with the first 6 items
+                FeaturedEvents = new ObservableCollection<Event>(loaded.Take(6));
             }
             catch (Exception ex)
             {

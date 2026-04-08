@@ -113,13 +113,48 @@
                     </Border>
                 </VerticalStackLayout>
 
-                <!-- Poll Options -->
+                <!-- Paid Voting -->
                 <VerticalStackLayout Spacing="20">
-                    <Label Text="RESPONSE OPTIONS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
-                    
+                    <Label Text="PAID VOTING" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+
+                    <Border Padding="20">
+                        <VerticalStackLayout Spacing="20">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label Text="Enable Paid Voting" FontSize="15" TextColor="{StaticResource White}"/>
+                                    <Label Text="Each vote costs a set amount (e.g. awards night)" FontSize="11" TextColor="{StaticResource TextSecondary}"/>
+                                </VerticalStackLayout>
+                                <Switch x:Name="PaidVotingSwitch" Grid.Column="1" OnColor="{StaticResource Primary}" ThumbColor="{StaticResource White}" Toggled="OnPaidVotingToggled"/>
+                            </Grid>
+
+                            <VerticalStackLayout x:Name="PaidVotingOptions" IsVisible="False" Spacing="15">
+                                <BoxView HeightRequest="1" Color="{StaticResource GlassBorderBrush}" Opacity="0.5"/>
+
+                                <VerticalStackLayout Spacing="8">
+                                    <Label Text="Price per vote (GHS)" FontSize="13" TextColor="{StaticResource TextSecondary}" Margin="5,0"/>
+                                    <Border Padding="18,5">
+                                        <Entry x:Name="VotePriceEntry" Text="1" Keyboard="Numeric" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15"/>
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Spacing="8">
+                                    <Label Text="Max votes per person (0 = unlimited)" FontSize="13" TextColor="{StaticResource TextSecondary}" Margin="5,0"/>
+                                    <Border Padding="18,5">
+                                        <Entry x:Name="MaxVotesEntry" Text="0" Keyboard="Numeric" TextColor="{StaticResource White}" PlaceholderColor="{StaticResource TextSecondary}" FontSize="15"/>
+                                    </Border>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Poll Options / Contestants -->
+                <VerticalStackLayout Spacing="20">
+                    <Label x:Name="OptionsLabel" Text="RESPONSE OPTIONS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+
                     <VerticalStackLayout x:Name="OptionsContainer" Spacing="15" />
 
-                    <Button Text="+ New Option" Clicked="OnAddOptionClicked" BackgroundColor="Transparent" TextColor="{StaticResource Primary}" BorderColor="{StaticResource Primary}" BorderWidth="1" HeightRequest="50" CornerRadius="15"/>
+                    <Button x:Name="AddOptionButton" Text="+ New Option" Clicked="OnAddOptionClicked" BackgroundColor="Transparent" TextColor="{StaticResource Primary}" BorderColor="{StaticResource Primary}" BorderWidth="1" HeightRequest="50" CornerRadius="15"/>
                 </VerticalStackLayout>
 
                 <!-- Error Message -->

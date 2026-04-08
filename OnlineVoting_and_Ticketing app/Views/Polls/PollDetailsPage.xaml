@@ -4,91 +4,156 @@
              Title="Poll Details"
              BackgroundColor="{StaticResource Background}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="25" Spacing="25">
+    <Grid>
+        <!-- Background glow -->
+        <Ellipse WidthRequest="350" HeightRequest="350" Fill="{StaticResource Primary}" Opacity="0.04"
+                 VerticalOptions="Start" HorizontalOptions="End" Margin="0,-100,-100,0"/>
 
-            <!-- Poll Header Card -->
-            <Border Style="{StaticResource Border}" Padding="25">
-                <VerticalStackLayout Spacing="20">
-                    
-                    <Grid ColumnDefinitions="Auto,*">
-                        <Border x:Name="StatusBorder" StrokeShape="RoundRectangle 8" Padding="12,6" StrokeThickness="0">
-                            <Label x:Name="StatusLabel" Text="Active" TextColor="White" FontSize="12" FontAttributes="Bold" />
+        <ScrollView>
+            <VerticalStackLayout Padding="25" Spacing="20">
+
+                <!-- Header Card -->
+                <Border Style="{StaticResource Border}" Padding="22">
+                    <VerticalStackLayout Spacing="16">
+
+                        <!-- Status + total votes row -->
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Border x:Name="StatusBorder" StrokeShape="RoundRectangle 8" Padding="12,6" StrokeThickness="0">
+                                <Label x:Name="StatusLabel" Text="ACTIVE" TextColor="White" FontSize="12" FontAttributes="Bold"/>
+                            </Border>
+                            <!-- Paid badge -->
+                            <Border x:Name="PaidBadge" Grid.Column="1" IsVisible="False"
+                                    Background="#20F59E0B" StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 8" Padding="12,6" Margin="10,0,0,0"
+                                    HorizontalOptions="Start" VerticalOptions="Center">
+                                <Label x:Name="PriceBadgeLabel" Text="GHS 1.00 / vote"
+                                       TextColor="#FBBF24" FontSize="12" FontAttributes="Bold"/>
+                            </Border>
+                            <Label x:Name="VoteCountLabel" Grid.Column="2"
+                                   TextColor="{StaticResource TextSecondary}" FontSize="12"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+
+                        <Label x:Name="TitleLabel" Style="{StaticResource Headline}" TextColor="{StaticResource White}"/>
+                        <Label x:Name="DescriptionLabel" FontSize="14" LineHeight="1.6"
+                               TextColor="{StaticResource TextSecondary}"/>
+
+                        <!-- Creator row -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Border WidthRequest="36" HeightRequest="36" StrokeShape="RoundRectangle 18"
+                                    Background="{StaticResource Surface}" StrokeThickness="0">
+                                <Label Text="👤" HorizontalOptions="Center" VerticalOptions="Center" FontSize="16"/>
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label x:Name="CreatorLabel" TextColor="{StaticResource White}" FontSize="14" FontAttributes="Bold"/>
+                                <Label Text="Poll Creator" TextColor="{StaticResource TextSecondary}" FontSize="11"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Timing row -->
+                        <Border Background="#10FFFFFF" Stroke="{StaticResource GlassBorderBrush}"
+                                StrokeShape="RoundRectangle 12" Padding="14">
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label Text="📅" FontSize="16"/>
+                                    <Label x:Name="DurationLabel" TextColor="{StaticResource White}" FontSize="13" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                                    <Label Text="⏰" FontSize="16"/>
+                                    <Label x:Name="TimeRemainingLabel" TextColor="{StaticResource Secondary}"
+                                           FontSize="13" FontAttributes="Bold" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+                            </Grid>
                         </Border>
-                        <Label x:Name="VoteCountLabel" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"
-                               TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                    </Grid>
 
-                    <Label x:Name="TitleLabel" Style="{StaticResource Headline}" HorizontalOptions="Start" TextColor="{StaticResource White}"/>
-                    <Label x:Name="DescriptionLabel" FontSize="15" LineHeight="1.6" TextColor="{StaticResource TextSecondary}"/>
+                        <!-- Max votes notice (paid polls) -->
+                        <Label x:Name="MaxVotesLabel" IsVisible="False"
+                               TextColor="{StaticResource TextSecondary}" FontSize="12"
+                               HorizontalTextAlignment="Center"/>
 
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
-                        <Border WidthRequest="44" HeightRequest="44" StrokeShape="RoundRectangle 22" 
-                                Background="{StaticResource Surface}" StrokeThickness="0">
-                            <Label Text="👤" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20"/>
-                        </Border>
-                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                            <Label x:Name="CreatorLabel" TextColor="{StaticResource White}" FontSize="15" FontAttributes="Bold"/>
-                            <Label Text="Poll Creator" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                        </VerticalStackLayout>
-                    </Grid>
-
-                    <Border Background="#10FFFFFF" Stroke="{StaticResource GlassBorderBrush}" StrokeShape="RoundRectangle 12" Padding="15">
-                        <VerticalStackLayout Spacing="10">
-                            <HorizontalStackLayout Spacing="10">
-                                <Label Text="📅" FontSize="18"/>
-                                <Label x:Name="DurationLabel" TextColor="{StaticResource White}" FontSize="14" VerticalOptions="Center"/>
-                            </HorizontalStackLayout>
-                            <HorizontalStackLayout Spacing="10">
-                                <Label Text="⏰" FontSize="18"/>
-                                <Label x:Name="TimeRemainingLabel" TextColor="{StaticResource Secondary}" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <HorizontalStackLayout Spacing="10">
-                        <Border x:Name="MultipleChoiceBadge" IsVisible="False" Background="#208B5CF6" StrokeThickness="0" StrokeShape="RoundRectangle 6" Padding="10,5">
-                            <Label Text="Multiple Choice" TextColor="#A78BFA" FontSize="11" FontAttributes="Bold" />
-                        </Border>
-                        <Border x:Name="AnonymousBadge" IsVisible="False" Background="#20F59E0B" StrokeThickness="0" StrokeShape="RoundRectangle 6" Padding="10,5">
-                            <Label Text="Anonymous" TextColor="#FBBF24" FontSize="11" FontAttributes="Bold" />
-                        </Border>
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Border>
-
-            <!-- Voting Section -->
-            <VerticalStackLayout x:Name="VotingSection" Spacing="20">
-                <Label Text="Cast Your Vote" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource White}" />
-                <Label x:Name="VotingInstructionsLabel" TextColor="{StaticResource TextSecondary}" FontSize="14" />
-                <VerticalStackLayout x:Name="OptionsContainer" Spacing="12" />
-                <Button x:Name="SubmitVoteButton" Text="Submit Vote" Style="{StaticResource Button}" HeightRequest="56" Clicked="OnSubmitVoteClicked" />
-            </VerticalStackLayout>
-
-            <!-- Results Section -->
-            <VerticalStackLayout x:Name="ResultsSection" Spacing="20" IsVisible="False">
-                <Grid ColumnDefinitions="*,Auto">
-                    <Label Text="Real-time Results" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource White}" />
-                    <Label x:Name="ResultsVoteCountLabel" Grid.Column="1" TextColor="{StaticResource TextSecondary}" FontSize="14" VerticalOptions="Center" />
-                </Grid>
-                <VerticalStackLayout x:Name="ResultsContainer" Spacing="15" />
-                <Label x:Name="ThankYouLabel" Text="✓ Your vote has been recorded" Style="{StaticResource SubHeadline}" TextColor="{StaticResource Secondary}" IsVisible="False" HorizontalOptions="Center" />
-            </VerticalStackLayout>
-
-            <!-- Status Messages -->
-            <Border x:Name="AlreadyVotedSection" IsVisible="False" Style="{StaticResource Border}" Background="#10F59E0B" Stroke="#30F59E0B" Padding="20">
-                <HorizontalStackLayout Spacing="15">
-                    <Label Text="✓" TextColor="#F59E0B" FontSize="24" VerticalOptions="Center"/>
-                    <VerticalStackLayout VerticalOptions="Center">
-                        <Label Text="Voice Recorded" TextColor="#FBBF24" FontSize="15" FontAttributes="Bold" />
-                        <Label Text="You have already participated in this poll." TextColor="{StaticResource TextSecondary}" FontSize="12" />
                     </VerticalStackLayout>
-                </HorizontalStackLayout>
-            </Border>
+                </Border>
 
-            <Label x:Name="ErrorLabel" TextColor="#F43F5E" FontSize="14" IsVisible="False" HorizontalTextAlignment="Center" />
-            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Style="{StaticResource ActivityIndicator}" HorizontalOptions="Center" />
+                <!-- Contestant / Option list -->
+                <Label x:Name="ContestantsHeader" Text="CONTESTANTS"
+                       FontSize="11" FontAttributes="Bold"
+                       TextColor="{StaticResource TextSecondary}" CharacterSpacing="1"/>
+                <VerticalStackLayout x:Name="ContestantsContainer" Spacing="12"/>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <!-- Voting Panel (active paid poll) -->
+                <Border x:Name="VotingPanel" IsVisible="False" Style="{StaticResource Border}" Padding="22">
+                    <VerticalStackLayout Spacing="18">
+
+                        <Label x:Name="SelectedLabel" Text="Select a contestant above"
+                               FontSize="15" TextColor="{StaticResource TextSecondary}"
+                               HorizontalTextAlignment="Center"/>
+
+                        <!-- Vote quantity stepper (paid only) -->
+                        <Grid x:Name="VoteQuantityRow" IsVisible="False"
+                              ColumnDefinitions="56,*,56" ColumnSpacing="0">
+                            <Button x:Name="DecreaseBtn" Text="−" FontSize="22"
+                                    BackgroundColor="{StaticResource Surface}"
+                                    TextColor="{StaticResource White}"
+                                    CornerRadius="12" HeightRequest="50"
+                                    Clicked="OnDecreaseVotes"/>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label x:Name="VoteQtyLabel" Text="1" FontSize="28"
+                                       FontAttributes="Bold" TextColor="{StaticResource White}"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="votes" FontSize="11"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                            <Button x:Name="IncreaseBtn" Grid.Column="2" Text="+" FontSize="22"
+                                    BackgroundColor="{StaticResource Surface}"
+                                    TextColor="{StaticResource White}"
+                                    CornerRadius="12" HeightRequest="50"
+                                    Clicked="OnIncreaseVotes"/>
+                        </Grid>
+
+                        <!-- Total cost label -->
+                        <Label x:Name="TotalCostLabel" IsVisible="False"
+                               FontSize="14" TextColor="{StaticResource TextSecondary}"
+                               HorizontalTextAlignment="Center"/>
+
+                        <Button x:Name="VoteButton" Text="Submit Vote"
+                                Style="{StaticResource Button}" HeightRequest="56"
+                                IsEnabled="False" Clicked="OnVoteClicked"/>
+
+                        <!-- Verify payment state (shown after Paystack browser opens) -->
+                        <Button x:Name="VerifyButton" Text="✓ I've Paid — Verify Payment"
+                                IsVisible="False"
+                                BackgroundColor="#2010B981" TextColor="#10B981"
+                                BorderColor="#4010B981" BorderWidth="1"
+                                HeightRequest="50" CornerRadius="15"
+                                Clicked="OnVerifyPaymentClicked"/>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Already voted / closed banner -->
+                <Border x:Name="VotedBanner" IsVisible="False" Style="{StaticResource Border}"
+                        Background="#10F59E0B" Stroke="#30F59E0B" Padding="18">
+                    <HorizontalStackLayout Spacing="14">
+                        <Label Text="✓" TextColor="#F59E0B" FontSize="22" VerticalOptions="Center"/>
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <Label x:Name="VotedBannerTitle" Text="Vote Recorded"
+                                   TextColor="#FBBF24" FontSize="15" FontAttributes="Bold"/>
+                            <Label x:Name="VotedBannerSub"
+                                   Text="Thank you for participating!"
+                                   TextColor="{StaticResource TextSecondary}" FontSize="12"/>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Label x:Name="ErrorLabel" TextColor="#F43F5E" FontSize="14"
+                       IsVisible="False" HorizontalTextAlignment="Center"/>
+                <ActivityIndicator x:Name="LoadingIndicator"
+                                   IsRunning="False" IsVisible="False"
+                                   Color="{StaticResource Primary}"
+                                   HorizontalOptions="Center"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

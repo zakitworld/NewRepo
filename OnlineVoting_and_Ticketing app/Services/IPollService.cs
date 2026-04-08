@@ -13,7 +13,9 @@ namespace OnlineVoting_and_Ticketing_app.Services
         Task<(bool Success, string? Error)> UpdatePollAsync(Poll pollData);
         Task<bool> DeletePollAsync(string pollId);
         Task<(bool Success, string? Error)> CastVoteAsync(string pollId, string userId, List<string> selectedOptionIds);
+        Task<(bool Success, string? Error)> CastPaidVoteAsync(string pollId, string userId, string optionId, int voteCount);
         Task<bool> HasUserVotedAsync(string pollId, string userId);
+        Task<int> GetUserVoteCountAsync(string pollId, string userId);
         Task<Dictionary<string, int>> GetPollResultsAsync(string pollId);
         Task<int> GetTotalPollsCountAsync(bool activeOnly = false);
     }
